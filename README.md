@@ -1,4 +1,7 @@
 # clojure.math.combinatorics
+
+Formerly clojure.contrib.combinatorics.
+
 Efficient, functional algorithms for generating lazy
 sequences for common combinatorial functions. 
 
