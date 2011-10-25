@@ -2,7 +2,7 @@
 ;;; sequences for common combinatorial functions.
 
 ;; by Mark Engelberg (mark.engelberg@gmail.com)
-;; January 27, 2009
+;; Last updated - October 24, 2011
 
 (comment
 "  
@@ -29,25 +29,7 @@ Example: (selections [1 2] 3) -> ((1 1 1) (1 1 2) (1 2 1) (1 2 2) (2 1 1) (2 1 2
 (permutations items) - A lazy sequence of all the permutations
 of items.
 Example: (permutations [1 2 3]) -> ((1 2 3) (1 3 2) (2 1 3) (2 3 1) (3 1 2) (3 2 1))
-
-(lex-permutations items) - A lazy sequence of all distinct
-permutations in lexicographic order
-(this function returns the permutations as
-vectors).  Only works on sequences of comparable
-items.  (Note that the result will be quite different from
-permutations when the sequence contains duplicate items.)  
-Example: (lex-permutations [1 1 2]) -> ([1 1 2] [1 2 1] [2 1 1])
-
-About permutations vs. lex-permutations:
-lex-permutations is faster than permutations, but only works
-on sequences of numbers.  They operate differently
-on sequences with duplicate items (lex-permutations will only
-give you back distinct permutations).  lex-permutations always
-returns the permutations sorted lexicographically whereas
-permutations will be in an order where the input sequence
-comes first.  In general, I recommend using the regular
-permutations function unless you have a specific
-need for lex-permutations.
+Example: (permutations [1 1 2]) -> ((1 1 2) (1 2 1) (2 1 1))
 
 About this code:
 These combinatorial functions can be written in an elegant way using recursion.  However, when dealing with combinations and permutations, you're usually generating large numbers of things, and speed counts.  My objective was to write the fastest possible code I could, restricting myself to Clojure's functional, persistent data structures (rather than using Java's arrays) so that this code could be safely leveraged within Clojure's transactional concurrency system.
@@ -147,16 +129,42 @@ for a longer description.)"}
   (when v (cons v (lazy-seq (vec-lex-permutations (iter-perm v))))))
 
 (defn lex-permutations
-  "Fast lexicographic permutation generator for a sequence of numbers"
+  "DEPRECATED as a public function.
+
+In prior versions of the combinatorics library, there were two similar functions: permutations and lex-permutations.  It was a source of confusion to know which to call.  Now, you can always call permutations.  When appropriate (i.e., when you pass in a sorted sequence of numbers), permutations will automatically call lex-permutations as a speed optimization."
+  {:deprecated "1.3"}
   [c]
   (lazy-seq
    (let [vec-sorted (vec (sort c))]
      (if (zero? (count vec-sorted))
        (list [])
        (vec-lex-permutations vec-sorted)))))
+
+(defn- sorted-numbers?
+  "Returns true iff s is a sequence of numbers in non-decreasing order"
+  [s]
+  (and (every? number? s)
+       (every? (partial apply <=) (partition 2 1 s))))
+
+(defn- multi-perm
+  "Handles the case when you want the permutations of a list with duplicate items."
+  [l]
+  (let [f (frequencies l),
+        v (vec (keys f)),
+        indices (apply concat
+                       (for [i (range (count v))]
+                         (repeat (f (v i)) i)))]
+    (map (partial map v) (lex-permutations indices))))
   
 (defn permutations
-  "All the permutations of items, lexicographic by index"
+  "All the distinct permutations of items, lexicographic by index."
   [items]
-  (let [v (vec items)]
-    (map #(map v %) (lex-permutations (range (count v))))))
+  (cond
+   (sorted-numbers? items) (lex-permutations items),
+
+   (apply distinct? items)
+   (let [v (vec items)]
+     (map #(map v %) (lex-permutations (range (count v)))))
+
+   :else
+   (multi-perm items)))
