@@ -1,6 +1,6 @@
 {:namespaces
  ({:source-url
-   "https://github.com/clojure/math.combinatorics/blob/2d142877187be32a72f7880c0933fd5aa3e8767f/src/main/clojure/clojure/math/combinatorics.clj",
+   "https://github.com/clojure/math.combinatorics/blob/20d43c45362e55e10f69a7be51a5c66e4a9c8123/src/main/clojure/clojure/math/combinatorics.clj",
    :wiki-url
    "http://clojure.github.com/math.combinatorics/clojure.math.combinatorics-api.html",
    :name "clojure.math.combinatorics",
@@ -12,9 +12,9 @@
    :name "cartesian-product",
    :namespace "clojure.math.combinatorics",
    :source-url
-   "https://github.com/clojure/math.combinatorics/blob/2d142877187be32a72f7880c0933fd5aa3e8767f/src/main/clojure/clojure/math/combinatorics.clj#L87",
+   "https://github.com/clojure/math.combinatorics/blob/20d43c45362e55e10f69a7be51a5c66e4a9c8123/src/main/clojure/clojure/math/combinatorics.clj#L87",
    :raw-source-url
-   "https://github.com/clojure/math.combinatorics/raw/2d142877187be32a72f7880c0933fd5aa3e8767f/src/main/clojure/clojure/math/combinatorics.clj",
+   "https://github.com/clojure/math.combinatorics/raw/20d43c45362e55e10f69a7be51a5c66e4a9c8123/src/main/clojure/clojure/math/combinatorics.clj",
    :wiki-url
    "http://clojure.github.com/math.combinatorics//clojure.math.combinatorics-api.html#clojure.math.combinatorics/cartesian-product",
    :doc "All the ways to take one item from each sequence",
@@ -25,9 +25,9 @@
    :name "combinations",
    :namespace "clojure.math.combinatorics",
    :source-url
-   "https://github.com/clojure/math.combinatorics/blob/2d142877187be32a72f7880c0933fd5aa3e8767f/src/main/clojure/clojure/math/combinatorics.clj#L70",
+   "https://github.com/clojure/math.combinatorics/blob/20d43c45362e55e10f69a7be51a5c66e4a9c8123/src/main/clojure/clojure/math/combinatorics.clj#L70",
    :raw-source-url
-   "https://github.com/clojure/math.combinatorics/raw/2d142877187be32a72f7880c0933fd5aa3e8767f/src/main/clojure/clojure/math/combinatorics.clj",
+   "https://github.com/clojure/math.combinatorics/raw/20d43c45362e55e10f69a7be51a5c66e4a9c8123/src/main/clojure/clojure/math/combinatorics.clj",
    :wiki-url
    "http://clojure.github.com/math.combinatorics//clojure.math.combinatorics-api.html#clojure.math.combinatorics/combinations",
    :doc
@@ -39,10 +39,10 @@
    :name "lex-permutations",
    :namespace "clojure.math.combinatorics",
    :source-url
-   "https://github.com/clojure/math.combinatorics/blob/2d142877187be32a72f7880c0933fd5aa3e8767f/src/main/clojure/clojure/math/combinatorics.clj#L131",
+   "https://github.com/clojure/math.combinatorics/blob/20d43c45362e55e10f69a7be51a5c66e4a9c8123/src/main/clojure/clojure/math/combinatorics.clj#L131",
    :deprecated "1.3",
    :raw-source-url
-   "https://github.com/clojure/math.combinatorics/raw/2d142877187be32a72f7880c0933fd5aa3e8767f/src/main/clojure/clojure/math/combinatorics.clj",
+   "https://github.com/clojure/math.combinatorics/raw/20d43c45362e55e10f69a7be51a5c66e4a9c8123/src/main/clojure/clojure/math/combinatorics.clj",
    :wiki-url
    "http://clojure.github.com/math.combinatorics//clojure.math.combinatorics-api.html#clojure.math.combinatorics/lex-permutations",
    :doc
@@ -54,9 +54,9 @@
    :name "permutations",
    :namespace "clojure.math.combinatorics",
    :source-url
-   "https://github.com/clojure/math.combinatorics/blob/2d142877187be32a72f7880c0933fd5aa3e8767f/src/main/clojure/clojure/math/combinatorics.clj#L159",
+   "https://github.com/clojure/math.combinatorics/blob/20d43c45362e55e10f69a7be51a5c66e4a9c8123/src/main/clojure/clojure/math/combinatorics.clj#L159",
    :raw-source-url
-   "https://github.com/clojure/math.combinatorics/raw/2d142877187be32a72f7880c0933fd5aa3e8767f/src/main/clojure/clojure/math/combinatorics.clj",
+   "https://github.com/clojure/math.combinatorics/raw/20d43c45362e55e10f69a7be51a5c66e4a9c8123/src/main/clojure/clojure/math/combinatorics.clj",
    :wiki-url
    "http://clojure.github.com/math.combinatorics//clojure.math.combinatorics-api.html#clojure.math.combinatorics/permutations",
    :doc
@@ -68,9 +68,9 @@
    :name "selections",
    :namespace "clojure.math.combinatorics",
    :source-url
-   "https://github.com/clojure/math.combinatorics/blob/2d142877187be32a72f7880c0933fd5aa3e8767f/src/main/clojure/clojure/math/combinatorics.clj#L107",
+   "https://github.com/clojure/math.combinatorics/blob/20d43c45362e55e10f69a7be51a5c66e4a9c8123/src/main/clojure/clojure/math/combinatorics.clj#L107",
    :raw-source-url
-   "https://github.com/clojure/math.combinatorics/raw/2d142877187be32a72f7880c0933fd5aa3e8767f/src/main/clojure/clojure/math/combinatorics.clj",
+   "https://github.com/clojure/math.combinatorics/raw/20d43c45362e55e10f69a7be51a5c66e4a9c8123/src/main/clojure/clojure/math/combinatorics.clj",
    :wiki-url
    "http://clojure.github.com/math.combinatorics//clojure.math.combinatorics-api.html#clojure.math.combinatorics/selections",
    :doc
@@ -82,9 +82,9 @@
    :name "subsets",
    :namespace "clojure.math.combinatorics",
    :source-url
-   "https://github.com/clojure/math.combinatorics/blob/2d142877187be32a72f7880c0933fd5aa3e8767f/src/main/clojure/clojure/math/combinatorics.clj#L81",
+   "https://github.com/clojure/math.combinatorics/blob/20d43c45362e55e10f69a7be51a5c66e4a9c8123/src/main/clojure/clojure/math/combinatorics.clj#L81",
    :raw-source-url
-   "https://github.com/clojure/math.combinatorics/raw/2d142877187be32a72f7880c0933fd5aa3e8767f/src/main/clojure/clojure/math/combinatorics.clj",
+   "https://github.com/clojure/math.combinatorics/raw/20d43c45362e55e10f69a7be51a5c66e4a9c8123/src/main/clojure/clojure/math/combinatorics.clj",
    :wiki-url
    "http://clojure.github.com/math.combinatorics//clojure.math.combinatorics-api.html#clojure.math.combinatorics/subsets",
    :doc "All the subsets of items",
