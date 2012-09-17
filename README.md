@@ -1,39 +1,114 @@
-# clojure.math.combinatorics
+clojure.math.combinatorics
+========================================
 
 Formerly clojure.contrib.combinatorics.
 
 Efficient, functional algorithms for generating lazy
 sequences for common combinatorial functions. 
 
-## Usage
+Releases and Dependency Information
+========================================
 
-* (combinations items n) - A lazy sequence of all the unique
-ways of taking n different elements from items.
+Latest stable release: 0.0.3
 
-     Example: (combinations [1 2 3] 2) -> ((1 2) (1 3) (2 3))
+* [All Released Versions](http://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22org.clojure%22%20AND%20a%3A%22math.combinatorics%22)
 
-* (subsets items) - A lazy sequence of all the subsets of
-items (but generalized to all sequences, not just sets).
+* [Development Snapshot Versions](https://oss.sonatype.org/index.html#nexus-search;gav~org.clojure~math.combinatorics~~~)
 
-      Example: (subsets [1 2 3]) -> (() (1) (2) (3) (1 2) (1 3) (2 3) (1 2 3))
+[Leiningen](https://github.com/technomancy/leiningen) dependency information:
 
-* (cartesian-product & seqs) - Takes any number of sequences
-as arguments, and returns a lazy sequence of all the ways
-to take one item from each seq.
+```clojure
+[org.clojure/math.combinatorics "0.0.3"]
+```
 
-      Example: (cartesian-product [1 2] [3 4]) -> ((1 3) (1 4) (2 3) (2 4))
+[Maven](http://maven.apache.org/) dependency information:
 
-* (selections items n) - A lazy sequence of all the ways to
-take n (possibly the same) items from the sequence of items.
+```xml
+<dependency>
+  <groupId>org.clojure</groupId>
+  <artifactId>math.combinatorics</artifactId>
+  <version>0.0.3</version>
+</dependency>
+```
 
-     Example: (selections [1 2] 3) -> ((1 1 1) (1 1 2) (1 2 1) (1 2 2) (2 1 1) (2 1 2) (2 2 1) (2 2 2))
+Example Usage
+========================================
 
-* (permutations items) - A lazy sequence of all the permutations
-of items.
+All functions return lazy sequences.
 
-      Example: (permutations [1 2 3]) -> ((1 2 3) (1 3 2) (2 1 3) (2 3 1) (3 1 2) (3 2 1))
+```clojure
+(ns example.core
+  (:require [clojure.math.combinatorics :as combo]))
+  
+; all the unique ways of taking n different elements from items
+    
+(combinations [1 2 3] 2)
+  
+;;=> ((1 2) (1 3) (2 3))
+  
+  
+; all the subsets of items
+
+(subsets [1 2 3]) 
+
+;;=> (() (1) (2) (3) (1 2) (1 3) (2 3) (1 2 3))  
+  
+
+; all the ways to take one item from each passed-in sequence
+
+(cartesian-product [1 2] [3 4]) 
+
+;;=> ((1 3) (1 4) (2 3) (2 4))
 
 
-## License
+; all the ways to take n (possibly the same) items from the sequence of items
+
+(selections [1 2] 3) 
+
+;;=> ((1 1 1) (1 1 2) (1 2 1) (1 2 2) (2 1 1) (2 1 2) (2 2 1) (2 2 2))
+  
+
+; all the permutations of items
+
+(permutations [1 2 3]) 
+
+;;=> ((1 2 3) (1 3 2) (2 1 3) (2 3 1) (3 1 2) (3 2 1))
+  
+```
+ 
+Refer to docstrings in the `clojure.math.combinatorics` namespace for
+additional documentation.
+
+[API Documentation](http://clojure.github.com/math.combinatorics/)
+
+
+Developer Information
+========================================
+
+* [GitHub project](https://github.com/clojure/math.combinatorics)
+
+* [Bug Tracker](http://dev.clojure.org/jira/browse/MCOMB)
+
+* [Continuous Integration](http://build.clojure.org/job/math.combinatorics/)
+
+* [Compatibility Test Matrix](http://build.clojure.org/job/math.combinatorics-test-matrix/)
+ 
+
+Changelog
+========================================
+
+* Release 0.0.3 on 2012-07-06
+	* Fixed bug with (selections [false] 3) returning nil
+	* Fixed test syntax for Clojure 1.4.0/1.5.0
+
+* Release 0.0.2 on 2011-10-24
+	* Deprecated lex-permutations (permutations is now intelligent)
+
+* Release 0.0.1 on 2011-09-29
+	* Initial release.
+	* Source-compatible with clojure.contrib.math, except for the name change.
+
+License
+========================================
 
 Distributed under the Eclipse Public License, the same as Clojure.
