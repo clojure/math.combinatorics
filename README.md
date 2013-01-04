@@ -41,23 +41,23 @@ All functions return lazy sequences.
   (:require [clojure.math.combinatorics :as combo]))
 
 ; all the unique ways of taking n different elements from items
-(combinations [1 2 3] 2)
+(combo/combinations [1 2 3] 2)
 ;;=> ((1 2) (1 3) (2 3))
 
-(subsets [1 2 3]) 
 ; all the subsets of items
+(combo/subsets [1 2 3])
 ;;=> (() (1) (2) (3) (1 2) (1 3) (2 3) (1 2 3))
 
 ; all the ways to take one item from each passed-in sequence
-(cartesian-product [1 2] [3 4]) 
+(combo/cartesian-product [1 2] [3 4])
 ;;=> ((1 3) (1 4) (2 3) (2 4))
 
 ; all the ways to take n (possibly the same) items from the sequence of items
-(selections [1 2] 3) 
+(combo/selections [1 2] 3)
 ;;=> ((1 1 1) (1 1 2) (1 2 1) (1 2 2) (2 1 1) (2 1 2) (2 2 1) (2 2 2))
 
 ; all the permutations of items
-(permutations [1 2 3]) 
+(combo/permutations [1 2 3])
 ;;=> ((1 2 3) (1 3 2) (2 1 3) (2 3 1) (3 1 2) (3 2 1))
 ```
 
