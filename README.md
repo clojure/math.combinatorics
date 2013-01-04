@@ -39,48 +39,32 @@ All functions return lazy sequences.
 ```clojure
 (ns example.core
   (:require [clojure.math.combinatorics :as combo]))
-  
+
 ; all the unique ways of taking n different elements from items
-    
-(combinations [1 2 3] 2)
-  
+(combo/combinations [1 2 3] 2)
 ;;=> ((1 2) (1 3) (2 3))
-  
-  
+
 ; all the subsets of items
-
-(subsets [1 2 3]) 
-
-;;=> (() (1) (2) (3) (1 2) (1 3) (2 3) (1 2 3))  
-  
+(combo/subsets [1 2 3])
+;;=> (() (1) (2) (3) (1 2) (1 3) (2 3) (1 2 3))
 
 ; all the ways to take one item from each passed-in sequence
-
-(cartesian-product [1 2] [3 4]) 
-
+(combo/cartesian-product [1 2] [3 4])
 ;;=> ((1 3) (1 4) (2 3) (2 4))
 
-
 ; all the ways to take n (possibly the same) items from the sequence of items
-
-(selections [1 2] 3) 
-
+(combo/selections [1 2] 3)
 ;;=> ((1 1 1) (1 1 2) (1 2 1) (1 2 2) (2 1 1) (2 1 2) (2 2 1) (2 2 2))
-  
 
 ; all the permutations of items
-
-(permutations [1 2 3]) 
-
+(combo/permutations [1 2 3])
 ;;=> ((1 2 3) (1 3 2) (2 1 3) (2 3 1) (3 1 2) (3 2 1))
-  
 ```
- 
+
 Refer to docstrings in the `clojure.math.combinatorics` namespace for
 additional documentation.
 
 [API Documentation](http://clojure.github.com/math.combinatorics/)
-
 
 Developer Information
 ========================================
@@ -92,21 +76,20 @@ Developer Information
 * [Continuous Integration](http://build.clojure.org/job/math.combinatorics/)
 
 * [Compatibility Test Matrix](http://build.clojure.org/job/math.combinatorics-test-matrix/)
- 
 
 Changelog
 ========================================
 
 * Release 0.0.3 on 2012-07-06
-	* Fixed bug with (selections [false] 3) returning nil
-	* Fixed test syntax for Clojure 1.4.0/1.5.0
+  * Fixed bug with (selections [false] 3) returning nil
+  * Fixed test syntax for Clojure 1.4.0/1.5.0
 
 * Release 0.0.2 on 2011-10-24
-	* Deprecated lex-permutations (permutations is now intelligent)
+  * Deprecated lex-permutations (permutations is now intelligent)
 
 * Release 0.0.1 on 2011-09-29
-	* Initial release.
-	* Source-compatible with clojure.contrib.math, except for the name change.
+  * Initial release.
+  * Source-compatible with clojure.contrib.math, except for the name change.
 
 License
 ========================================
