@@ -4,6 +4,13 @@
 ;; by Mark Engelberg (mark.engelberg@gmail.com)
 ;; Last updated - October 24, 2011
 
+(ns
+  #^{:author "Mark Engelberg",
+     :doc "Efficient, functional algorithms for generating lazy
+sequences for common combinatorial functions. (See the source code 
+for a longer description.)"}
+  clojure.math.combinatorics)
+
 (comment
 "  
 (combinations items n) - A lazy sequence of all the unique
@@ -39,14 +46,6 @@ I also restricted myself to algorithms that return results in a standard order. 
 Most of these algorithms are derived from algorithms found in Knuth's wonderful Art of Computer Programming books (specifically, the volume 4 fascicles), which present fast, iterative solutions to these common combinatorial problems.  Unfortunately, these iterative versions are somewhat inscrutable.  If you want to better understand these algorithms, the Knuth books are the place to start.
 "
 )
-
-
-(ns
-  #^{:author "Mark Engelberg",
-     :doc "Efficient, functional algorithms for generating lazy
-sequences for common combinatorial functions. (See the source code 
-for a longer description.)"}
-  clojure.math.combinatorics)
 
 (defn- index-combinations
   [n cnt]
