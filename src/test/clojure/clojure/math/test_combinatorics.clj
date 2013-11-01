@@ -39,3 +39,23 @@
        (sorted-numbers? []) true
        (sorted-numbers? [1 4 2]) false
        (sorted-numbers? [1 :a 2]) false))
+
+(deftest test-partitions
+  (do (are [x y] (= x y)
+           (partitions [1 2 3]) '(([1 2 3]) ([1 2] [3]) ([1 3] [2]) ([1] [2 3]) ([1] [2] [3]))
+           (partitions [1 2]) '(([1 2]) ([1] [2]))
+           (partitions [1]) '(([1]))
+           (partitions []) '(())
+           (partitions nil) '(())
+           (partitions [1 1 1]) '(([1 1 1]) ([1 1] [1]) ([1] [1] [1]))
+           (partitions [1 1 2]) '(([1 1 2]) ([1 1] [2]) ([1 2] [1]) ([1] [1] [2])))
+    (doseq [num-items (range 0 4)
+            lo (range -1 (+ 2 num-items))
+            hi (range -1 (+ 2 num-items))]
+      (is (= (partitions (range num-items) :min lo :max hi)
+             (filter #(<= lo (count %) hi) (partitions (range num-items)))))) ; tests partitions-H
+    (doseq [num-items (range 2 4)
+            lo (range -1 (+ 2 num-items))
+            hi (range -1 (+ 2 num-items))]
+      (is (= (partitions (cons 0 (range (dec num-items))) :min lo :max hi)
+             (filter #(<= lo (count %) hi) (partitions (cons 0 (range (dec num-items)))))))))) ; tests partitions-M

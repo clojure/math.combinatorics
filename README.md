@@ -58,7 +58,30 @@ All functions return lazy sequences.
 
 ; all the permutations of items
 (combo/permutations [1 2 3])
-;;=> ((1 2 3) (1 3 2) (2 1 3) (2 3 1) (3 1 2) (3 2 1))
+;;=> ([1 2 3] [1 3 2] [2 1 3] [2 3 1] [3 1 2] [3 2 1])
+(combo/permutations [1 1 2])
+;;=> ([1 1 2] [1 2 1] [2 1 1])
+
+; all the partitions of items.
+(combo/partitions [1 2 3])
+;;=> (([1 2 3])
+      ([1 2] [3])
+      ([1 3] [2])
+      ([1] [2 3])
+      ([1] [2] [3]))
+(combo/partitions [1 1 2])
+;;=> (([1 1 2])
+      ([1 1] [2])
+      ([1 2] [1])
+      ([1] [1] [2]))
+(combo/partitions [1 1 2 2] :min 2 :max 3)
+;;=> (([1 1 2] [2])
+   	  ([1 1] [2 2])
+      ([1 1] [2] [2])
+      ([1 2 2] [1])
+      ([1 2] [1 2])
+      ([1 2] [1] [2])
+      ([1] [1] [2 2]))
 ```
 
 Refer to docstrings in the `clojure.math.combinatorics` namespace for
