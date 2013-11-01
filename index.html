@@ -63,6 +63,9 @@ namespace.
       <a class="toc-entry-anchor" href="#clojure.math.combinatorics/lex-permutations">lex-permutations</a>
       
     </div><div style="margin-left: 1em;" class="toc-entry">
+      <a class="toc-entry-anchor" href="#clojure.math.combinatorics/partitions">partitions</a>
+      
+    </div><div style="margin-left: 1em;" class="toc-entry">
       <a class="toc-entry-anchor" href="#clojure.math.combinatorics/permutations">permutations</a>
       
     </div><div style="margin-left: 1em;" class="toc-entry">
@@ -105,7 +108,7 @@ for a longer description.)</pre>
     <pre id="var-docstr">All the ways to take one item from each sequence</pre>
     
     
-    <a href="https://github.com/clojure/math.combinatorics/blob/5cf956fbc2d7225aad8e9ed8e2670e7af64417c4/src/main/clojure/clojure/math/combinatorics.clj#L86" id="var-source">Source</a>
+    <a href="https://github.com/clojure/math.combinatorics/blob/6c3a9b5844e05abbbbfc8da93fe3644624adb8ff/src/main/clojure/clojure/math/combinatorics.clj#L105" id="var-source">Source</a>
   </div><div id="var-entry">
     <br />
     <hr />
@@ -116,7 +119,7 @@ for a longer description.)</pre>
     <pre id="var-docstr">All the unique ways of taking n different elements from items</pre>
     
     
-    <a href="https://github.com/clojure/math.combinatorics/blob/5cf956fbc2d7225aad8e9ed8e2670e7af64417c4/src/main/clojure/clojure/math/combinatorics.clj#L69" id="var-source">Source</a>
+    <a href="https://github.com/clojure/math.combinatorics/blob/6c3a9b5844e05abbbbfc8da93fe3644624adb8ff/src/main/clojure/clojure/math/combinatorics.clj#L88" id="var-source">Source</a>
   </div><div id="var-entry">
     <br />
     <hr />
@@ -129,7 +132,19 @@ for a longer description.)</pre>
 In prior versions of the combinatorics library, there were two similar functions: permutations and lex-permutations.  It was a source of confusion to know which to call.  Now, you can always call permutations.  When appropriate (i.e., when you pass in a sorted sequence of numbers), permutations will automatically call lex-permutations as a speed optimization.</pre>
     
     <span class="var-deprecated"><span id="content">Deprecated since Lazy sequences for common combinatorial functions version 1.3</span><br /></span>
-    <a href="https://github.com/clojure/math.combinatorics/blob/5cf956fbc2d7225aad8e9ed8e2670e7af64417c4/src/main/clojure/clojure/math/combinatorics.clj#L130" id="var-source">Source</a>
+    <a href="https://github.com/clojure/math.combinatorics/blob/6c3a9b5844e05abbbbfc8da93fe3644624adb8ff/src/main/clojure/clojure/math/combinatorics.clj#L149" id="var-source">Source</a>
+  </div><div id="var-entry">
+    <br />
+    <hr />
+    <h2 id="clojure.math.combinatorics/partitions">partitions</h2>
+    <span id="var-type">function</span><br />
+    <pre id="var-usage">Usage: (partitions items &amp; args)
+</pre>
+    <pre id="var-docstr">All the lexicographic distinct partitions of items.
+Optionally pass in :min and/or :max to specify inclusive bounds on the number of parts the items can be split into.</pre>
+    
+    
+    <a href="https://github.com/clojure/math.combinatorics/blob/6c3a9b5844e05abbbbfc8da93fe3644624adb8ff/src/main/clojure/clojure/math/combinatorics.clj#L469" id="var-source">Source</a>
   </div><div id="var-entry">
     <br />
     <hr />
@@ -140,7 +155,7 @@ In prior versions of the combinatorics library, there were two similar functions
     <pre id="var-docstr">All the distinct permutations of items, lexicographic by index.</pre>
     
     
-    <a href="https://github.com/clojure/math.combinatorics/blob/5cf956fbc2d7225aad8e9ed8e2670e7af64417c4/src/main/clojure/clojure/math/combinatorics.clj#L158" id="var-source">Source</a>
+    <a href="https://github.com/clojure/math.combinatorics/blob/6c3a9b5844e05abbbbfc8da93fe3644624adb8ff/src/main/clojure/clojure/math/combinatorics.clj#L177" id="var-source">Source</a>
   </div><div id="var-entry">
     <br />
     <hr />
@@ -151,7 +166,7 @@ In prior versions of the combinatorics library, there were two similar functions
     <pre id="var-docstr">All the ways of taking n (possibly the same) elements from the sequence of items</pre>
     
     
-    <a href="https://github.com/clojure/math.combinatorics/blob/5cf956fbc2d7225aad8e9ed8e2670e7af64417c4/src/main/clojure/clojure/math/combinatorics.clj#L106" id="var-source">Source</a>
+    <a href="https://github.com/clojure/math.combinatorics/blob/6c3a9b5844e05abbbbfc8da93fe3644624adb8ff/src/main/clojure/clojure/math/combinatorics.clj#L125" id="var-source">Source</a>
   </div><div id="var-entry">
     <br />
     <hr />
@@ -162,7 +177,7 @@ In prior versions of the combinatorics library, there were two similar functions
     <pre id="var-docstr">All the subsets of items</pre>
     
     
-    <a href="https://github.com/clojure/math.combinatorics/blob/5cf956fbc2d7225aad8e9ed8e2670e7af64417c4/src/main/clojure/clojure/math/combinatorics.clj#L80" id="var-source">Source</a>
+    <a href="https://github.com/clojure/math.combinatorics/blob/6c3a9b5844e05abbbbfc8da93fe3644624adb8ff/src/main/clojure/clojure/math/combinatorics.clj#L99" id="var-source">Source</a>
   </div>
 </div>
 
