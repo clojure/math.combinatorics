@@ -297,7 +297,8 @@ In prior versions of the combinatorics library, there were two similar functions
         lex (apply lex-partitions-H N args)]
     (for [parts lex]
       (for [part parts]
-        (mapv items part)))))
+        (-> (reduce (fn [v o] (conj! v (items o))) (transient []) part) ; mapv
+          persistent!)))))
 
 ;;;;;; Partitions - Algorithm M
 
