@@ -2,7 +2,7 @@
 ;;; sequences for common combinatorial functions.
 
 ;; by Mark Engelberg (mark.engelberg@gmail.com)
-;; Last updated - October 24, 2011
+;; Last updated - October 31, 2013
 
 (ns
   #^{:author "Mark Engelberg",
