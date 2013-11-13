@@ -2,7 +2,7 @@
 ;;; sequences for common combinatorial functions.
 
 ;; by Mark Engelberg (mark.engelberg@gmail.com)
-;; Last updated - October 31, 2013
+;; Last updated - November 13, 2013
 
 (ns
   #^{:author "Mark Engelberg",
@@ -96,11 +96,23 @@ Most of these algorithms are derived from algorithms found in Knuth's wonderful 
 		:else
 		(map #(map v-items %) (index-combinations n cnt)))))))
 
+(defn- unchunk
+  "Given a sequence that may have chunks, return a sequence that is 1-at-a-time
+lazy with no chunks. Chunks are good for efficiency when the data items are
+small, but when being processed via map, for example, a reference is kept to
+every function result in the chunk until the entire chunk has been processed,
+which increases the amount of memory in use that cannot be garbage
+collected."
+  [s]
+  (lazy-seq
+   (when (seq s)
+     (cons (first s) (unchunk (rest s))))))
+
 (defn subsets
   "All the subsets of items"
   [items]
   (mapcat (fn [n] (combinations items n))
-	  (range (inc (count items)))))
+	  (unchunk (range (inc (count items))))))
 
 (defn cartesian-product
   "All the ways to take one item from each sequence"
