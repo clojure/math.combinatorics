@@ -104,8 +104,10 @@ Changelog
 ========================================
 * Release 0.0.8 on 2014-07-20
   * Minor improvement of helper function used by permutations.
+
 * Release 0.0.7 on 2013-11-13
   * Unchunk range in `subsets` to minimize memory usage.
+
 * Release 0.0.6 on 2013-10-31
   * Removed use of mapv for backwards compat with older versions of Clojure.
 
