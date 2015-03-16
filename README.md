@@ -84,6 +84,11 @@ All functions return lazy sequences.
       ([1] [1] [2 2]))
 ```
 
+Note that `permutations` and `partitions` intelligently handle inputs with duplicate items,
+using a more sophisticated algorithm that will produce only distinct permutations/partitions.
+The other functions do not do this, and will produce duplicates in the output if the input has 
+duplicate items.
+
 Refer to docstrings in the `clojure.math.combinatorics` namespace for
 additional documentation.
 
