@@ -2,14 +2,15 @@
 ;;; sequences for common combinatorial functions.
 
 ;; by Mark Engelberg (mark.engelberg@gmail.com)
-;; Last updated - November 13, 2013
+;; Last updated - March 16, 2015
 
 (ns
   #^{:author "Mark Engelberg",
      :doc "Efficient, functional algorithms for generating lazy
 sequences for common combinatorial functions. (See the source code 
 for a longer description.)"}
-  clojure.math.combinatorics)
+  clojure.math.combinatorics
+  (:refer-clojure :exclude [update]))
 
 (comment
 "  
