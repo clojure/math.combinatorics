@@ -6,9 +6,27 @@
   (are [x y] (= x y)
        (combinations [1 2 3] 2) '((1 2) (1 3) (2 3))))
 
+(def bounded-compositions @#'clojure.math.combinatorics/bounded-compositions)
+
+(deftest test-bounded-compositions
+  (is (= (set (bounded-compositions 5 [3 4 2 1 0 2]))
+         (set (for [a (range 4)
+                    b (range 5)
+                    c (range 3)
+                    d (range 2)
+                    e (range 1)
+                    f (range 3)
+                    :when (= 5 (+ a b c d e f))]
+                [a b c d e f])))))
+
+(defn old-subsets [l]
+  (map (partial map deref) (subsets (map atom l)))) 
+
 (deftest test-subsets
   (are [x y] (= x y)
-       (subsets [1 2 3]) '(() (1) (2) (3) (1 2) (1 3) (2 3) (1 2 3))))
+       (subsets [1 2 3]) '(() (1) (2) (3) (1 2) (1 3) (2 3) (1 2 3))
+       (subsets [1 2 3 4]) '(() (1) (2) (3) (4) (1 2) (1 3) (2 3) (1 4) (2 4) (3 4) (1 2 3) (1 2 4) (1 3 4) (2 3 4) (1 2 3 4))
+       (subsets [1 1 2 2 2 3]) (distinct (old-subsets [1 1 2 2 2 3]))))
 
 (deftest test-cartesian-product
   (are [x y] (= x y)
