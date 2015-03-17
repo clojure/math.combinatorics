@@ -71,45 +71,68 @@ Most of these algorithms are derived from algorithms found in Knuth's wonderful 
 "
 )
 
-(defn- index-combinations ;Algorithm T
-  [t cnt]
+(defn- index-combinations
+  [n cnt]
+  (lazy-seq
+    (let [c (vec (cons nil (for [j (range 1 (inc n))] (+ j cnt (- (inc n)))))),
+          iter-comb
+          (fn iter-comb [c j]
+            (if (> j n) nil
+              (let [c (assoc c j (dec (c j)))]
+                (if (< (c j) j) [c (inc j)]
+                  (loop [c c, j j]
+                    (if (= j 1) [c j]
+                      (recur (assoc c (dec j) (dec (c j))) (dec j)))))))),
+          step
+          (fn step [c j]
+            (cons (rseq (subvec c 1 (inc n)))
+                  (lazy-seq (let [next-step (iter-comb c j)]
+                              (when next-step (step (next-step 0) (next-step 1)))))))]
+      (step c 1))))
+
+
+(defn- index-combinations2 ;Algorithm T
+  [n cnt]
   (lazy-seq
    (let [c (vec (concat [nil]
-                        (for [j (range 1 (inc t))] (dec j))
+                        (for [j (range 1 (inc n))] (dec j))
                         [cnt 0]))
          iter-comb
          (fn iter-comb [c j x]
            (let [c1+1 (inc (c 1))]
              (if (< c1+1 (c 2))
-               [(assoc c 1 c1+1) j x]
-               (loop [c c, j 2, x x]
+               [(assoc c 1 c1+1) (c 2) x]
+               (loop [c c, j j, x x]
                  (let [c (assoc c (dec j) (- j 2)),
                        x (inc (c j))]
                    (cond
                      (= x (c (inc j))) (recur c (inc j) x)
-                     (> j t) nil
+                     (> j n) nil
                      :else [(assoc c j x) (dec j) x]))))))
          step
          (fn step [c j x]
-           (cons (subvec c 1 (inc t))
+           (cons (subvec c 1 (inc n))
                  (lazy-seq (let [next-step (iter-comb c j x)]
                              (when next-step (step (next-step 0) (next-step 1) (next-step 2)))))))]
-     (step c t t))))
+     (step c n n))))
+
+(defn pret [s] (println s) s)
 
 (defn- bounded-compositions
   "All seqs q where t=q_s + q_s-1 + ... + q_0 and q_s<=m_s ... q_0<=m_0"
   [t m] ; Algorithm Q
-  (let [s (dec (count m)), s+1 (inc s)
-        q (vec (repeat s+1 0)),
+  (let [s (dec (count m))
+        q (vec (repeat (inc s) 0)),
         x t,
                 
         distribute
         (fn distribute [q x]
-          (loop [j 0, q q, x x]
+          (println "distributing" q x)
+          (loop [q q, j 0, x x]
             (let [mj (m j)]
               (if (> x mj)
-                (recur (inc j) (assoc q j mj) (- x mj))
-                [(assoc q j x) j x])))),
+                (recur (assoc q j mj) (inc j) (- x mj))
+                (pret [(assoc q j x) j x]))))),
         
         increase-and-decrease
         (fn increase-and-decrease [q j x]
@@ -166,7 +189,7 @@ Most of these algorithms are derived from algorithms found in Knuth's wonderful 
 (defn combinations
   "All the unique ways of taking t different elements from items"
   [items t]      
-  (let [v-items (vec items)]
+  (let [v-items (vec (reverse items))]
     (if (zero? t) (list ())
       (let [cnt (count items)]
         (cond (> t cnt) nil
