@@ -40,6 +40,68 @@
        (sorted-numbers? [1 4 2]) false
        (sorted-numbers? [1 :a 2]) false))
 
+(def factorial-numbers @#'clojure.math.combinatorics/factorial-numbers)
+
+(deftest test-factorial-numbers
+  (are [x y] (= (factorial-numbers x) y)
+       463 [3 4 1 0 1 0]
+       0 []
+       1 [1 0]
+       2 [1 0 0]))
+
+(def nth-permutation-distinct @#'clojure.math.combinatorics/nth-permutation-distinct)
+
+(deftest test-nth-permutation-distinct
+  (let [perms (permutations (range 4))]
+    (doseq [i (range 24)]
+      (is (= (nth perms i) (nth-permutation-distinct (range 4) i))))))
+
+(def nth-permutation-duplicates  @#'clojure.math.combinatorics/nth-permutation-duplicates)
+
+(deftest test-nth-permutation-duplicates
+  (let [perms (permutations [1 1 2 2 2 3])]
+    (doseq [i (range 60)]
+      (is (= (nth perms i) (nth-permutation-duplicates [1 1 2 2 2 3] i))))))
+
+(deftest test-count-permutations
+  (are [x] (= (count-permutations x) (count (permutations x)))
+       (range 4)
+       [1 1 2]
+       [1 1 2 2]
+       [1 1 1 2 2 3]))
+
+(deftest test-nth-permutation
+  (let [sortedDistinctNumbers (range 4)
+        sortedDuplicateNumbers [1 1 1 2 3 3]
+        distinctChars [\a \b \c \d]
+        duplicates [\a \a \b \c \c]
+        duplicates2 [1 3 1 2 1 2]]
+    (doseq [collection [sortedDistinctNumbers 
+                        sortedDuplicateNumbers
+                        distinctChars
+                        duplicates
+                        duplicates2],
+            :let [perms (permutations collection)
+                  c (count perms)]
+            n (range c)]
+      (is (= (nth perms n) (nth-permutation collection n)))
+      (is (= c (count-permutations collection))))))
+
+(deftest test-permutation-index
+  (let [sortedDistinctNumbers (range 4)
+        sortedDuplicateNumbers [1 1 1 2 3 3]
+        distinctChars [\a \b \c \d]
+        duplicates [\a \a \b \c \c]
+        duplicates2 [1 3 1 2 1 2]]
+    (doseq [collection [sortedDistinctNumbers 
+                        sortedDuplicateNumbers
+                        distinctChars
+                        duplicates
+                        duplicates2],
+            perm (permutations collection)]
+      (is (= (nth-permutation (sort collection) (permutation-index perm))
+             perm)))))
+            
 (deftest test-partitions
   (do (are [x y] (= x y)
            (partitions [1 2 3]) '(([1 2 3]) ([1 2] [3]) ([1 3] [2]) ([1] [2 3]) ([1] [2] [3]))

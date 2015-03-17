@@ -39,6 +39,10 @@ of items.
 Example: (permutations [1 2 3]) -> ((1 2 3) (1 3 2) (2 1 3) (2 3 1) (3 1 2) (3 2 1))
 Example: (permutations [1 1 2]) -> ((1 1 2) (1 2 1) (2 1 1))
 
+(count-permutations items) - (count (permutations items)), but computed more directly
+(nth-permutation items) - (nth (permutations items)), but computed more directly
+(permutation-index items) - Returns the number n where (nth-permutation (sort items) n) is items
+
 (partitions items) - A lazy sequence of all the partitions
 of items.
 Example: (partitions [1 2 3]) -> (([1 2 3])
@@ -71,31 +75,57 @@ Most of these algorithms are derived from algorithms found in Knuth's wonderful 
   [n cnt]
   (lazy-seq
    (let [c (vec (cons nil (for [j (range 1 (inc n))] (+ j cnt (- (inc n)))))),
-	 iter-comb
-	 (fn iter-comb [c j]
-	   (if (> j n) nil
-	       (let [c (assoc c j (dec (c j)))]
-		 (if (< (c j) j) [c (inc j)]
-		     (loop [c c, j j]
-		       (if (= j 1) [c j]
-			   (recur (assoc c (dec j) (dec (c j))) (dec j)))))))),
-	 step
-	 (fn step [c j]
-	   (cons (rseq (subvec c 1 (inc n)))
-		 (lazy-seq (let [next-step (iter-comb c j)]
-			     (when next-step (step (next-step 0) (next-step 1)))))))]
+         iter-comb
+         (fn iter-comb [c j]
+           (if (> j n) nil
+             (let [c (assoc c j (dec (c j)))]
+               (if (< (c j) j) [c (inc j)]
+                 (loop [c c, j j]
+                   (if (= j 1) [c j]
+                     (recur (assoc c (dec j) (dec (c j))) (dec j)))))))),
+         step
+         (fn step [c j]
+           (cons (rseq (subvec c 1 (inc n)))
+                 (lazy-seq (let [next-step (iter-comb c j)]
+                             (when next-step (step (next-step 0) (next-step 1)))))))]
      (step c 1))))
+
+(defn- index-combinations2 ;Algorithm T
+  [n cnt]
+  (lazy-seq
+   (let [c (vec (concat [nil]
+                        (for [j (range 1 (inc n))] (dec j))
+                        [cnt 0]))
+         iter-comb
+         (fn iter-comb [c j x]
+           (let [c1+1 (inc (c 1))]
+             (if (< c1+1 (c 2))
+               [(assoc c 1 c1+1) (c 2) x]
+               (loop [c c, j j, x x]
+                 (let [c (assoc c (dec j) (- j 2)),
+                       x (inc (c j))]
+                   (cond
+                     (= x (c (inc j))) (recur c (inc j) x)
+                     (> j n) nil
+                     :else [(assoc c j x) (dec j) x]))))))
+         step
+         (fn step [c j x]
+           (cons (subvec c 1 (inc n))
+                 (lazy-seq (let [next-step (iter-comb c j x)]
+                             (when next-step (step (next-step 0) (next-step 1) (next-step 2)))))))]
+     (step c n n))))
 
 (defn combinations
   "All the unique ways of taking n different elements from items"
   [items n]      
-  (let [v-items (vec (reverse items))]
+  (let [v-items (vec items)]
     (if (zero? n) (list ())
-	(let [cnt (count items)]
-	  (cond (> n cnt) nil
-		(= n cnt) (list (seq items))
-		:else
-		(map #(map v-items %) (index-combinations n cnt)))))))
+      (let [cnt (count items)]
+        (cond (> n cnt) nil
+              (= n 1) (for [item items] (list item))
+              (= n cnt) (list (seq items))
+              :else
+              (map #(map v-items %) (index-combinations2 n cnt)))))))
 
 (defn- unchunk
   "Given a sequence that may have chunks, return a sequence that is 1-at-a-time
@@ -106,31 +136,31 @@ which increases the amount of memory in use that cannot be garbage
 collected."
   [s]
   (lazy-seq
-   (when (seq s)
-     (cons (first s) (unchunk (rest s))))))
+    (when (seq s)
+      (cons (first s) (unchunk (rest s))))))
 
 (defn subsets
   "All the subsets of items"
   [items]
   (mapcat (fn [n] (combinations items n))
-	  (unchunk (range (inc (count items))))))
+          (unchunk (range (inc (count items))))))
 
 (defn cartesian-product
   "All the ways to take one item from each sequence"
   [& seqs]
   (let [v-original-seqs (vec seqs)
-	step
-	(fn step [v-seqs]
-	  (let [increment
-		(fn [v-seqs]
-		  (loop [i (dec (count v-seqs)), v-seqs v-seqs]
-		    (if (= i -1) nil
-			(if-let [rst (next (v-seqs i))]
-			  (assoc v-seqs i rst)
-			  (recur (dec i) (assoc v-seqs i (v-original-seqs i)))))))]
-	    (when v-seqs
-	       (cons (map first v-seqs)
-		     (lazy-seq (step (increment v-seqs)))))))]
+        step
+        (fn step [v-seqs]
+          (let [increment
+                (fn [v-seqs]
+                  (loop [i (dec (count v-seqs)), v-seqs v-seqs]
+                    (if (= i -1) nil
+                      (if-let [rst (next (v-seqs i))]
+                        (assoc v-seqs i rst)
+                        (recur (dec i) (assoc v-seqs i (v-original-seqs i)))))))]
+            (when v-seqs
+              (cons (map first v-seqs)
+                    (lazy-seq (step (increment v-seqs)))))))]
     (when (every? seq seqs)
       (lazy-seq (step v-original-seqs)))))
 
@@ -143,18 +173,18 @@ collected."
 
 (defn- iter-perm [v]
   (let [len (count v),
-	j (loop [i (- len 2)]
-	     (cond (= i -1) nil
-		   (< (v i) (v (inc i))) i
-		   :else (recur (dec i))))]
+        j (loop [i (- len 2)]
+            (cond (= i -1) nil
+                  (< (v i) (v (inc i))) i
+                  :else (recur (dec i))))]
     (when j
       (let [vj (v j),
-	    l (loop [i (dec len)]
-		(if (< vj (v i)) i (recur (dec i))))]
-	(loop [v (assoc v j (v l) l vj), k (inc j), l (dec len)]
-	  (if (< k l)
-	    (recur (assoc v k (v l) l (v k)) (inc k) (dec l))
-	    v))))))
+            l (loop [i (dec len)]
+                (if (< vj (v i)) i (recur (dec i))))]
+        (loop [v (assoc v j (v l) l vj), k (inc j), l (dec len)]
+          (if (< k l)
+            (recur (assoc v k (v l) l (v k)) (inc k) (dec l))
+            v))))))
 
 (defn- vec-lex-permutations [v]
   (when v (cons v (lazy-seq (vec-lex-permutations (iter-perm v))))))
@@ -166,10 +196,10 @@ In prior versions of the combinatorics library, there were two similar functions
   {:deprecated "1.3"}
   [c]
   (lazy-seq
-   (let [vec-sorted (vec (sort c))]
-     (if (zero? (count vec-sorted))
-       (list [])
-       (vec-lex-permutations vec-sorted)))))
+    (let [vec-sorted (vec (sort c))]
+      (if (zero? (count vec-sorted))
+        (list [])
+        (vec-lex-permutations vec-sorted)))))
 
 (defn- sorted-numbers?
   "Returns true iff s is a sequence of numbers in non-decreasing order"
@@ -181,24 +211,207 @@ In prior versions of the combinatorics library, there were two similar functions
   "Handles the case when you want the permutations of a list with duplicate items."
   [l]
   (let [f (frequencies l),
-        v (vec (keys f)),
+        v (vec (distinct l)),
         indices (apply concat
                        (for [i (range (count v))]
                          (repeat (f (v i)) i)))]
     (map (partial map v) (lex-permutations indices))))
-  
+
 (defn permutations
-  "All the distinct permutations of items, lexicographic by index."
+  "All the distinct permutations of items, lexicographic by index 
+(special handling for duplicate items)."
   [items]
   (cond
-   (sorted-numbers? items) (lex-permutations items),
+    (sorted-numbers? items) (lex-permutations items),
+    
+    (apply distinct? items)
+    (let [v (vec items)]
+      (map #(map v %) (lex-permutations (range (count v)))))
+    
+    :else
+    (multi-perm items)))
 
-   (apply distinct? items)
-   (let [v (vec items)]
-     (map #(map v %) (lex-permutations (range (count v)))))
+;; Jumping directly to a given permutation
 
-   :else
-   (multi-perm items)))
+;; First, let's deal with the case where all items are distinct
+;; This is the easier case.
+
+(defn- factorial-numbers
+  "Input is a non-negative base 10 integer, output is the number in the
+factorial number system (http://en.wikipedia.org/wiki/Factorial_number_system)
+expressed as a list of 'digits'" 
+  [n]
+  {:pre [(integer? n) (not (neg? n))]}
+  (loop [n n, digits (), divisor 1]
+    (if (zero? n) 
+      digits
+      (let [q (quot n divisor), r (rem n divisor)]
+        (recur q (cons r digits) (inc divisor))))))
+
+(defn- factorial [n]
+  {:pre [(integer? n) (not (neg? n))]}
+  (loop [acc 1, n n]
+    (if (zero? n) acc (recur (*' acc n) (dec n)))))
+
+(defn- remove-nth [l n]
+  (loop [acc [], l l, n n]
+    (if (zero? n) (into acc (rest l))
+      (recur (conj acc (first l)) (rest l) (dec n)))))
+
+(defn- nth-permutation-distinct
+  "Input should be a sorted sequential collection l of distinct items, 
+output is nth-permutation (0-based)"
+  [l n]
+  (assert (< n (factorial (count l))) 
+          (format "%s is too large. Input has only %s permutations."
+                  (str n) (str (factorial (count l)))))
+  (let [length (count l)
+        fact-nums (factorial-numbers n)]
+    (loop [indices (concat (repeat (- length (count fact-nums)) 0)
+                           fact-nums),
+           l l
+           perm []]
+      (if (empty? indices) perm
+        (let [i (first indices),
+              item (nth l i)]
+          (recur (rest indices) (remove-nth l i) (conj perm item))))))) 
+
+;; Now we generalize to collections with duplicates
+
+(defn- count-permutations-from-frequencies [freqs]
+  (let [counts (vals freqs)]
+    (reduce / (factorial (apply + counts))
+            (map factorial counts ))))
+  
+(defn count-permutations
+  "Counts the number of distinct permutations of l"
+  [l]
+  (count-permutations-from-frequencies (frequencies l)))    
+      
+(defn- initial-perm-numbers
+  "Takes a sorted frequency map and returns how far into the sequence of
+lexicographic permutations you get by varying the first item"
+  [freqs]
+  (reductions + 0
+    (for [[k v] freqs]
+      (count-permutations-from-frequencies (assoc freqs k (dec v))))))
+
+;; Explanation of initial-perm-numbers:
+; (initial-perm-numbers (sorted-map 1 2, 2 1)) => (0 2 3) because when
+; doing the permutations of [1 1 2], there are 2 permutations starting with 1
+; and 1 permutation starting with 2.
+; So the permutations starting with 1 begin with the 0th permutation
+; and the permutations starting with 2 begin with the 2nd permutation
+; (The final 3 denotes the total number of permutations).
+
+(defn- index-remainder
+  "Finds the index and remainder from the initial-perm-numbers."
+  [perm-numbers n]
+  (loop [perm-numbers perm-numbers
+         index 0]
+    (if (and (<= (first perm-numbers) n)
+             (< n (second perm-numbers)))
+      [index (- n (first perm-numbers))]
+      (recur (rest perm-numbers) (inc index)))))
+
+;; Explanation of index-remainder:
+; (index-remainder [0 6 9 11] 8) => [1 2]
+; because 8 is (+ (nth [0 6 9 11] 1) 2)
+; i.e., 1 gives us the index into the largest number smaller than n
+; and 2 is the remaining amount needed to sum up to n.
+
+(defn- dec-key [m k]
+  (if (= 1 (m k))
+    (dissoc m k)
+    (update-in m [k] dec)))
+
+(defn- factorial-numbers-with-duplicates
+  "Input is a non-negative base 10 integer n, and a sorted frequency map freqs.
+Output is a list of 'digits' in this wacky duplicate factorial number system" 
+  [n freqs]
+  (loop [n n, digits [], freqs freqs]
+    (if (zero? n) (into digits (repeat (apply + (vals freqs)) 0))
+      (let [[index remainder] 
+            (index-remainder (initial-perm-numbers freqs) n)]
+        (recur remainder (conj digits index)
+               (let [nth-key (nth (keys freqs) index)]
+                 (dec-key freqs nth-key)))))))
+
+(defn- nth-permutation-duplicates
+  "Input should be a sorted sequential collection l of distinct items, 
+output is nth-permutation (0-based)"
+  [l n]
+  (assert (< n (count-permutations l)) 
+          (format "%s is too large. Input has only %s permutations."
+                  (str n) (str (count-permutations l))))
+  (loop [freqs (into (sorted-map) (frequencies l)),
+         indices (factorial-numbers-with-duplicates n freqs)
+         perm []]
+      (if (empty? indices) perm
+        (let [i (first indices),
+              item (nth (keys freqs) i)]
+          (recur (dec-key freqs item)
+                 (rest indices) 
+                 (conj perm item))))))
+
+;; Now we create the public version, which detects which underlying algorithm to call
+
+(defn nth-permutation
+  "(nth (permutations items)) but calculated more directly."
+  [items n]
+  (if (sorted-numbers? items)
+    (if (apply distinct? items) 
+      (nth-permutation-distinct items n)
+      (nth-permutation-duplicates items n))
+    (if (apply distinct? items)
+      (let [v (vec items),
+            perm-indices (nth-permutation-distinct (range (count items)) n)]
+        (vec (map v perm-indices)))
+      (let [v (vec (distinct items)),
+            f (frequencies items),
+            indices (apply concat
+                           (for [i (range (count v))]
+                             (repeat (f (v i)) i)))]
+        (vec (map v (nth-permutation-duplicates indices n)))))))
+
+;; Now let's go the other direction, from a sortable collection to the nth
+;; position in which we would find the collection in the lexicographic sequence
+;; of permutations
+
+(defn- list-index
+  "The opposite of nth, i.e., from an item in a list, find the n"
+  [l item]
+  (loop [l l, n 0]
+    (assert (seq l))
+    (if (= item (first l)) n
+      (recur (rest l) (inc n)))))
+
+(defn- permutation-index-distinct
+  [l]
+  (loop [l l, index 0, n (dec (count l))]
+    (if (empty? l) index
+      (recur (rest l) 
+             (+ index (* (factorial n) (list-index (sort l) (first l))))
+             (dec n)))))
+
+(defn- permutation-index-duplicates
+  [l]
+  (loop [l l, index 0, freqs (into (sorted-map) (frequencies l))]
+    (if (empty? l) index
+      (recur (rest l)
+             (reduce + index 
+                     (for [k (take-while #(neg? (compare % (first l))) (keys freqs))]
+                       (count-permutations-from-frequencies (dec-key freqs k))))
+             (dec-key freqs (first l))))))
+
+(defn permutation-index
+  "Input must be a sortable collection of items.  Returns the n such that
+(nth-permutation (sort items) n) is items."
+  [items]
+  (if (apply distinct? items)
+    (permutation-index-distinct items)
+    (permutation-index-duplicates items)))
+
 
 ;;;;; Partitions, written by Alex Engelberg; adapted from Knuth Volume 4A
 
