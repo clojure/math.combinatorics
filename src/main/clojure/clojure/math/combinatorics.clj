@@ -17,10 +17,12 @@ for a longer description.)"}
 (combinations items n) - A lazy sequence of all the unique
 ways of taking n different elements from items.
 Example: (combinations [1 2 3] 2) -> ((1 2) (1 3) (2 3))
+Example: (combinations [1 1 2 2] 2) -> ((1 1) (1 2) (2 2))
 
 (subsets items) - A lazy sequence of all the subsets of
 items (but generalized to all sequences, not just sets).
 Example: (subsets [1 2 3]) -> (() (1) (2) (3) (1 2) (1 3) (2 3) (1 2 3))
+Example: (subsets [1 1 2 2]) -> (() (1) (2) (1 1) (1 2) (2 2) (1 1 2) (1 2 2) (1 1 2 2))
 
 (cartesian-product & seqs) - Takes any number of sequences
 as arguments, and returns a lazy sequence of all the ways
@@ -278,6 +280,11 @@ In prior versions of the combinatorics library, there were two similar functions
 ;; First, let's deal with the case where all items are distinct
 ;; This is the easier case.
 
+(defn- factorial [n]
+  {:pre [(integer? n) (not (neg? n))]}
+  (loop [acc 1, n n]
+    (if (zero? n) acc (recur (*' acc n) (dec n)))))
+
 (defn- factorial-numbers
   "Input is a non-negative base 10 integer, output is the number in the
 factorial number system (http://en.wikipedia.org/wiki/Factorial_number_system)
@@ -289,11 +296,6 @@ expressed as a list of 'digits'"
       digits
       (let [q (quot n divisor), r (rem n divisor)]
         (recur q (cons r digits) (inc divisor))))))
-
-(defn- factorial [n]
-  {:pre [(integer? n) (not (neg? n))]}
-  (loop [acc 1, n n]
-    (if (zero? n) acc (recur (*' acc n) (dec n)))))
 
 (defn- remove-nth [l n]
   (loop [acc [], l l, n n]
@@ -328,7 +330,9 @@ output is nth-permutation (0-based)"
 (defn count-permutations
   "Counts the number of distinct permutations of l"
   [l]
-  (count-permutations-from-frequencies (frequencies l)))    
+  (if (apply distinct? l) 
+    (factorial (count l))
+    (count-permutations-from-frequencies (frequencies l))))    
 
 (defn- initial-perm-numbers
   "Takes a sorted frequency map and returns how far into the sequence of
@@ -416,10 +420,100 @@ output is nth-permutation (0-based)"
                              (repeat (f (v i)) i)))]
         (vec (map v (nth-permutation-duplicates indices n)))))))
 
+;; Let's do the same thing now for combinations
+
+(defn- n-take-k [n k]
+  (cond
+    (< k 0) 0
+    (> k n) 0
+    (zero? k) 1
+    (= k 1) n
+    (> k (quot n 2)) (recur n (- n k))
+    :else (/ (apply *' (range (inc (- n k)) (inc n)))
+             (apply *' (range 1 (inc k))))))
+
+(defn- ^:dynamic count-combinations-from-frequencies [freqs t]
+  (let [counts (vals freqs)
+        sum (apply + counts)]
+    (cond 
+      (zero? t) 1
+      (= t 1) (count freqs)
+      (every? #{1} counts) (n-take-k (count freqs) t)
+      (> t sum) 0
+      (= t sum) 1
+      (= (count freqs) 1) 1
+      :else
+      (let [new-freqs (dec-key freqs (first (keys freqs)))]
+        (+ (count-combinations-from-frequencies new-freqs (dec t))
+           (count-combinations-from-frequencies (dissoc freqs (first (keys freqs))) t))))))
+
+(defn count-combinations
+  "(count (combinations items t)) but computed more directly"
+  [items t]
+  (if (apply distinct? items)
+    (n-take-k (count items) t)
+    (binding [count-combinations-from-frequencies (memoize count-combinations-from-frequencies)]
+      (count-combinations-from-frequencies (frequencies items)) t)))
+
+(defn- count-combinations-unmemoized
+  "(count (combinations items t)) but computed more directly"
+  [items t]
+  (if (apply distinct? items)
+    (n-take-k (count items) t)
+    (count-combinations-from-frequencies (frequencies items) t)))
+
+(defn- nth-combination-distinct
+  "The nth element of the sequence of t-combinations of items,
+where items is a collection of distinct elements"
+  [items t n]
+  (loop [comb []
+         items items,
+         t t,
+         n n]
+    (if (or (zero? n) (empty? items)) (into comb (take t items))
+      (let [dc-dt (n-take-k (dec (count items)) (dec t))]
+        (if (< n dc-dt) 
+          (recur (conj comb (first items)) (rest items) (dec t) n)
+          (recur comb (rest items) t (- n dc-dt)))))))
+                   
+(defn- nth-combination-freqs
+  "The nth element of the sequence of t-combinations of the multiset
+represented by freqs"
+  [freqs t n]
+  (loop [comb [],
+         freqs freqs,
+         t t, 
+         n n]
+    (if (or (zero? n) (empty? freqs)) 
+      (into comb (take t (apply concat (for [[k v] freqs] (repeat v k)))))
+      (let [first-key (first (keys freqs)),
+            remove-one-key (dec-key freqs first-key)
+            dc-dt (count-combinations-from-frequencies remove-one-key (dec t))]
+        (if (< n dc-dt)
+          (recur (conj comb first-key) remove-one-key (dec t) n)
+          (recur comb (dissoc freqs first-key) t (- n dc-dt)))))))
+              
+(defn nth-combination
+  "The nth element of the sequence of t-combinations of items"
+  [items t n]
+  (binding [count-combinations-from-frequencies (memoize count-combinations-from-frequencies)]
+    (assert (< n (count-combinations-unmemoized items t))
+            (format "%s is too large. Input has only %s combinations."
+                    (str n) (str (count-combinations-unmemoized items t))))
+    (if (apply distinct? items)
+      (nth-combination-distinct items t n)
+      (let [v (vec (distinct items))
+            f (frequencies items),
+            indices (apply concat
+                           (for [i (range (count v))]
+                             (repeat (f (v i)) i)))
+            indices-freqs (into (sorted-map) (frequencies indices))]
+        (vec (map v (nth-combination-freqs indices-freqs t n)))))))
+
 ;; Now let's go the other direction, from a sortable collection to the nth
 ;; position in which we would find the collection in the lexicographic sequence
 ;; of permutations
-
+    
 (defn- list-index
   "The opposite of nth, i.e., from an item in a list, find the n"
   [l item]
@@ -448,7 +542,7 @@ output is nth-permutation (0-based)"
 
 (defn permutation-index
   "Input must be a sortable collection of items.  Returns the n such that
-(nth-permutation (sort items) n) is items."
+    (nth-permutation (sort items) n) is items."
   [items]
   (if (apply distinct? items)
     (permutation-index-distinct items)
@@ -737,7 +831,7 @@ output is nth-permutation (0-based)"
 
 (defn partitions
   "All the lexicographic distinct partitions of items.
-Optionally pass in :min and/or :max to specify inclusive bounds on the number of parts the items can be split into."
+    Optionally pass in :min and/or :max to specify inclusive bounds on the number of parts the items can be split into."
   [items & args]
   (cond
     (= (count items) 0) (apply partitions-H items args)
