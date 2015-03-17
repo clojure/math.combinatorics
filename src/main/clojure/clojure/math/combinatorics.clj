@@ -90,91 +90,59 @@ Most of these algorithms are derived from algorithms found in Knuth's wonderful 
                               (when next-step (step (next-step 0) (next-step 1)))))))]
       (step c 1))))
 
+;; Helper function for bounded-distributions
+(defn- distribute [m index total distribution already-distributed]
+  (loop [distribution distribution
+         index index
+         already-distributed already-distributed]
+    (if (>= index (count m)) nil
+      (let [quantity-to-distribute (- total already-distributed)
+            mi (m index)]
+        (if (<= quantity-to-distribute mi)
+          (conj distribution [index quantity-to-distribute total])
+          (recur (conj distribution [index mi (+ already-distributed mi)])
+                 (inc index)
+                 (+ already-distributed mi))))))) 
 
-(defn- index-combinations2 ;Algorithm T
-  [n cnt]
-  (lazy-seq
-   (let [c (vec (concat [nil]
-                        (for [j (range 1 (inc n))] (dec j))
-                        [cnt 0]))
-         iter-comb
-         (fn iter-comb [c j x]
-           (let [c1+1 (inc (c 1))]
-             (if (< c1+1 (c 2))
-               [(assoc c 1 c1+1) (c 2) x]
-               (loop [c c, j j, x x]
-                 (let [c (assoc c (dec j) (- j 2)),
-                       x (inc (c j))]
-                   (cond
-                     (= x (c (inc j))) (recur c (inc j) x)
-                     (> j n) nil
-                     :else [(assoc c j x) (dec j) x]))))))
-         step
-         (fn step [c j x]
-           (cons (subvec c 1 (inc n))
-                 (lazy-seq (let [next-step (iter-comb c j x)]
-                             (when next-step (step (next-step 0) (next-step 1) (next-step 2)))))))]
-     (step c n n))))
-
-(defn pret [s] (println s) s)
-
-(defn- bounded-compositions
-  "All seqs q where t=q_s + q_s-1 + ... + q_0 and q_s<=m_s ... q_0<=m_0"
-  [t m] ; Algorithm Q
-  (let [s (dec (count m))
-        q (vec (repeat (inc s) 0)),
-        x t,
-                
-        distribute
-        (fn distribute [q x]
-          (println "distributing" q x)
-          (loop [q q, j 0, x x]
-            (let [mj (m j)]
-              (if (> x mj)
-                (recur (assoc q j mj) (inc j) (- x mj))
-                (pret [(assoc q j x) j x]))))),
-        
-        increase-and-decrease
-        (fn increase-and-decrease [q j x]
-          (loop [j j]
-            (cond
-              (> j s) nil,
-              (= (q j) (m j)) (recur (inc j))
-              :else (let [q (assoc q j (inc (q j)))
-                          j (dec j)
-                          q (assoc q j (dec (q j)))]
-                      (if (zero? (q 0))
-                        [q 1 x]
-                        [q j x])))))              
-        
-        iter
-        (fn iter [q j x]
-          (let [[q j x go-to-increase-and-decrease?] 
-                (cond
-                  (zero? j) [q 1 (dec (q 0)) false]
-                  (zero? (q 0)) [(assoc q j 0) (inc j) (dec (q j)) false]
-                  :else [q j x true])]
-            (if go-to-increase-and-decrease? (increase-and-decrease q j x)
-              (let [[q j x terminate?]
-                    (loop [q q, j j, x x]
-                      ;(println m s q j x)
-                      (cond
-                        (> j s) [q j x true]
-                        (= (q j) (m j)) (recur (assoc q j 0) (inc j) (+ x (m j)))
-                        :else [q j x false]))]
-                (if terminate? nil
-                  (let [q (assoc q j (inc (q j)))]
-                    (if (zero? x) 
-                      [(assoc q 0 0) j x]
-                      (distribute q x))))))))                  
+;; Helper function for bounded-distributions
+(defn- next-distribution [m total distribution]
+  (let [[index this-bucket this-and-to-the-left] (peek distribution)]
+    (cond
+      (< index (dec (count m)))
+      (if (= this-bucket 1)
+        (conj (pop distribution) [(inc index) 1 this-and-to-the-left])
+        (conj (pop distribution) 
+              [index (dec this-bucket) (dec this-and-to-the-left)]
+              [(inc index) 1 this-and-to-the-left])),
+      ; so we have stuff in the last bucket
+      (= this-bucket total) nil
+      :else
+      (loop [distribution (pop distribution)],
+        (let
+          [[index this-bucket this-and-to-the-left] (peek distribution),
+           distribution (if (= this-bucket 1) 
+                          (pop distribution)
+                          (conj (pop distribution)
+                                [index (dec this-bucket) (dec this-and-to-the-left)]))],
+          (cond
+            (<= (- total (dec this-and-to-the-left)) (apply + (subvec m (inc index))))       
+            (distribute m (inc index) total distribution (dec this-and-to-the-left)),
             
-        step 
-        (fn step [q j x]
-          (cons q (lazy-seq (when-let [next-step (iter q j x)]
-                              (step (next-step 0) (next-step 1) (next-step 2))))))]
-    
-        (apply step (distribute q x))))
-        
+            (seq distribution) (recur distribution)
+            :else nil))))))
+      
+;; Helper function for multi-comb
+(defn- bounded-distributions
+  [m t]
+  (let [step 
+        (fn step [distribution]
+          (cons distribution
+                (lazy-seq (when-let [next-step (next-distribution m t distribution)]
+                            (step next-step)))))]
+    (step (distribute m 0 t [] 0))))
+
+;; Combinations of multisets
+;; The algorithm in Knuth generates in the wrong order, so this is a new algorithm
 (defn- multi-comb
   "Handles the case when you want the combinations of a list with duplicate items."
   [l t]
@@ -182,9 +150,11 @@ Most of these algorithms are derived from algorithms found in Knuth's wonderful 
         v (vec (distinct l)),
         domain (range (count v))
         m (vec (for [i domain] (f (v i))))
-        qs (bounded-compositions t m)]
+        qs (bounded-distributions m t)]
     (for [q qs]
-      (apply concat (for [i domain] (repeat (q i) (v i)))))))
+      (apply concat
+             (for [[index this-bucket _] q]
+               (repeat this-bucket (v index)))))))
                 
 (defn combinations
   "All the unique ways of taking t different elements from items"
@@ -194,8 +164,9 @@ Most of these algorithms are derived from algorithms found in Knuth's wonderful 
       (let [cnt (count items)]
         (cond (> t cnt) nil
               (= t 1) (for [item (distinct items)] (list item))
-              (= t cnt) (list (seq items))
-              (apply distinct? items) (map #(map v-items %) (index-combinations t cnt)),
+              (apply distinct? items) (if (= t cnt) 
+                                        (list (seq items))
+                                        (map #(map v-items %) (index-combinations t cnt))),
               :else (multi-comb items t))))))
 
 (defn- unchunk
