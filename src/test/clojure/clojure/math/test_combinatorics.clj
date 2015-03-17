@@ -17,7 +17,10 @@
        (subsets [1 2 3 4]) '(() (1) (2) (3) (4) (1 2) (1 3) (1 4) (2 3) (2 4) (3 4) (1 2 3) (1 2 4) (1 3 4) (2 3 4) (1 2 3 4))
        (subsets [1 1 2]) (subsets [1 2 1])
        (subsets [1 3 2 3]) (subsets [1 3 3 2]))  
-  (are [x] (= (subsets x) (distinct (old-subsets x)))
+  (are [x] (and (= (subsets x) (distinct (old-subsets x)))
+                (= (count (subsets x)) (count-subsets x)))
+       []
+       [1 2 3 4]
        [1 1 2 2 2 3]
        [1 1 1 2 2 3]
        [1 1 1 1 1]
@@ -28,6 +31,43 @@
        [1 1 1 1 2 2]
        [1 2 3 3 4 4]
        [1 1 2 3 3 4]))
+
+(deftest test-nth-combination
+  (are [x]
+       (every?
+         (fn [t]
+           (and (= (count-combinations x t) (count (combinations x t)))
+                (let [c (count-combinations x t)]
+                  (= (for [i (range c)] (nth-combination x t i))
+                     (combinations x t)))))
+         (range (inc (count x))))
+       [1 2 3 4]
+       []
+       [1 2 2 3 3 3]
+       [1 1 1 2 2 3]
+       [1 2 2 2 3 3]
+       [1 1 1 2 3 3]
+       [1 1 2 3 3 3]
+       [1 2 3 1 2 1]
+       [\a \b \c]
+       [\a \b \c \a \b \c]
+       ))
+
+(deftest test-nth-subset
+  (are [x]
+       (let [c (count-subsets x)]
+         (= (for [i (range c)] (nth-subset x i))
+            (subsets x)))
+       [1 2 3 4]
+       []
+       [1 2 2 3 3 3]
+       [1 1 1 2 2 3]
+       [1 2 2 2 3 3]
+       [1 1 1 2 3 3]
+       [1 1 2 3 3 3]
+       [1 2 3 1 2 1]
+       [\a \b \c]
+       [\a \b \c \a \b \c]))
 
 (deftest test-cartesian-product
   (are [x y] (= x y)
