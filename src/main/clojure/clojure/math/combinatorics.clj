@@ -557,12 +557,12 @@ represented by freqs"
 (defn nth-combination
   "The nth element of the sequence of t-combinations of items"
   [items t n]
-  (binding [count-combinations-from-frequencies (memoize count-combinations-from-frequencies)]
-    (assert (< n (count-combinations-unmemoized items t))
-            (format "%s is too large. Input has only %s combinations."
-                    (str n) (str (count-combinations-unmemoized items t))))
-    (if (all-different? items)
-      (nth-combination-distinct items t n)
+  (assert (< n (count-combinations items t))
+          (format "%s is too large. Input has only %s combinations."
+                  (str n) (str (count-combinations-unmemoized items t))))
+  (if (all-different? items)
+    (nth-combination-distinct items t n)
+    (binding [count-combinations-from-frequencies (memoize count-combinations-from-frequencies)]
       (let [v (vec (distinct items))
             f (frequencies items),
             indices (apply concat
@@ -573,10 +573,10 @@ represented by freqs"
 
 (defn nth-subset
   [items n]
+  (assert (< n (count-subsets items))
+          (format "%s is too large. Input has only %s subsets."
+                  (str n) (str (count-subsets items))))
   (binding [count-combinations-from-frequencies (memoize count-combinations-from-frequencies)]
-    (assert (< n (count-subsets items))
-            (format "%s is too large. Input has only %s subsets."
-                    (str n) (str (count-subsets-unmemoized items))))
     (loop [size 0,
            n n]
       (let [num-combinations (count-combinations-unmemoized items size)]
