@@ -528,14 +528,14 @@ so that we can memoize over a series of calls."
 where items is a collection of distinct elements"
   [items t n]
   (loop [comb []
-               items items,
-               t t,
-               n n]
-          (if (or (zero? n) (empty? items)) (into comb (take t items))
-            (let [dc-dt (n-take-k (dec (count items)) (dec t))]
-              (if (< n dc-dt) 
-                (recur (conj comb (first items)) (rest items) (dec t) n)
-                (recur comb (rest items) t (- n dc-dt)))))))
+         items items,
+         t t,
+         n n]
+    (if (or (zero? n) (empty? items)) (into comb (take t items))
+      (let [dc-dt (n-take-k (dec (count items)) (dec t))]
+        (if (< n dc-dt) 
+          (recur (conj comb (first items)) (rest items) (dec t) n)
+          (recur comb (rest items) t (- n dc-dt)))))))
                          
 (defn- nth-combination-freqs
   "The nth element of the sequence of t-combinations of the multiset

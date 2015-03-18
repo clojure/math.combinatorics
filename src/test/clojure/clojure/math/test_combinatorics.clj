@@ -148,6 +148,16 @@
       (is (= (nth perms n) (nth-permutation collection n)))
       (is (= c (count-permutations collection))))))
 
+(deftest test-drop-permutations
+  (doseq [x [[1 2 3]
+             [1 1 2]
+             [\a \b \c]
+             [\a \a \b \c \c]
+             [1 3 1 2 1 2]]
+          :let [c (count-permutations x)]
+          i (range c)]
+    (is (= (drop-permutations x i) (drop i (permutations x))))))
+
 (deftest test-permutation-index
   (let [sortedDistinctNumbers (range 4)
         sortedDuplicateNumbers [1 1 1 2 3 3]
