@@ -77,6 +77,8 @@
   (are [x y] (= x y)
        (selections [1 2] 3) '((1 1 1) (1 1 2) (1 2 1) (1 2 2) (2 1 1) (2 1 2) (2 2 1) (2 2 2))))
 
+(def lex-permutations @#'clojure.math.combinatorics/lex-permutations)
+
 (deftest test-permutations
   (are [x y] (= x y)
        (permutations [1 2 3]) '((1 2 3) (1 3 2) (2 1 3) (2 3 1) (3 1 2) (3 2 1))

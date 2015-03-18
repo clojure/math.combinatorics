@@ -14,15 +14,21 @@ for a longer description.)"}
 
 (comment
 "  
-(combinations items n) - A lazy sequence of all the unique
-ways of taking n different elements from items.
+(combinations items t) - A lazy sequence of all the unique
+ways of taking t different elements from items.
 Example: (combinations [1 2 3] 2) -> ((1 2) (1 3) (2 3))
 Example: (combinations [1 1 2 2] 2) -> ((1 1) (1 2) (2 2))
+
+(count-combinations items t) - (count (combinations items t)), but computed more directly
+(nth-combination items t n) - (nth (combinations items t) n), but computed more directly
 
 (subsets items) - A lazy sequence of all the subsets of
 items (but generalized to all sequences, not just sets).
 Example: (subsets [1 2 3]) -> (() (1) (2) (3) (1 2) (1 3) (2 3) (1 2 3))
 Example: (subsets [1 1 2 2]) -> (() (1) (2) (1 1) (1 2) (2 2) (1 1 2) (1 2 2) (1 1 2 2))
+
+(count-subsets items) - (count (subsets items)), but computed more directly
+(nth-subset items n) - (nth (subsets items) n), but computed more directly
 
 (cartesian-product & seqs) - Takes any number of sequences
 as arguments, and returns a lazy sequence of all the ways
@@ -42,7 +48,8 @@ Example: (permutations [1 2 3]) -> ((1 2 3) (1 3 2) (2 1 3) (2 3 1) (3 1 2) (3 2
 Example: (permutations [1 1 2]) -> ((1 1 2) (1 2 1) (2 1 1))
 
 (count-permutations items) - (count (permutations items)), but computed more directly
-(nth-permutation items) - (nth (permutations items)), but computed more directly
+(nth-permutation items n) - (nth (permutations items)), but computed more directly
+(drop-permutations items n) - (drop n (permutations items)), but computed more directly
 (permutation-index items) - Returns the number n where (nth-permutation (sort items) n) is items
 
 (partitions items) - A lazy sequence of all the partitions
@@ -241,7 +248,7 @@ collected."
 (defn- vec-lex-permutations [v]
   (when v (cons v (lazy-seq (vec-lex-permutations (iter-perm v))))))
 
-(defn lex-permutations
+(defn- lex-permutations
   "DEPRECATED as a public function.
 
 In prior versions of the combinatorics library, there were two similar functions: permutations and lex-permutations.  It was a source of confusion to know which to call.  Now, you can always call permutations.  When appropriate (i.e., when you pass in a sorted sequence of numbers), permutations will automatically call lex-permutations as a speed optimization."
@@ -428,6 +435,30 @@ output is nth-permutation (0-based)"
                              (repeat (f (v i)) i)))]
         (vec (map v (nth-permutation-duplicates indices n)))))))
 
+(defn drop-permutations
+  "(drop n (permutations items)) but calculated more directly."
+  [items n]
+  (cond
+    (zero? n) (permutations items)
+    (= n (count-permutations items)) ()
+    :else
+    (if (sorted-numbers? items)
+      (if (all-different? items) 
+        (vec-lex-permutations (nth-permutation-distinct items n))
+        (vec-lex-permutations (nth-permutation-duplicates items n)))
+      (if (all-different? items)
+        (let [v (vec items),
+              perm-indices (nth-permutation-distinct (range (count items)) n)]
+          (map (partial map v) (vec-lex-permutations perm-indices)))
+        (let [v (vec (distinct items)),
+              f (frequencies items),
+              indices (apply concat
+                             (for [i (range (count v))]
+                               (repeat (f (v i)) i)))]
+          (map (partial map v) 
+               (vec-lex-permutations
+                 (nth-permutation-duplicates indices n))))))))
+
 ;; Let's do the same thing now for combinations
 
 (defn- n-take-k [n k]
@@ -455,14 +486,6 @@ output is nth-permutation (0-based)"
         (+ (count-combinations-from-frequencies new-freqs (dec t))
            (count-combinations-from-frequencies (dissoc freqs (first (keys freqs))) t))))))
 
-(defn count-combinations
-  "(count (combinations items t)) but computed more directly"
-  [items t]
-  (if (all-different? items)
-    (n-take-k (count items) t)
-    (binding [count-combinations-from-frequencies (memoize count-combinations-from-frequencies)]
-      (count-combinations-from-frequencies (frequencies items) t))))
-
 (defn- count-combinations-unmemoized
   "We need an internal version that doesn't memoize each call to count-combinations-from-frequencies
 so that we can memoize over a series of calls."
@@ -470,6 +493,12 @@ so that we can memoize over a series of calls."
   (if (all-different? items)
     (n-take-k (count items) t)
     (count-combinations-from-frequencies (frequencies items) t)))
+
+(defn count-combinations
+  "(count (combinations items t)) but computed more directly"
+  [items t]
+  (binding [count-combinations-from-frequencies (memoize count-combinations-from-frequencies)]
+    (count-combinations-unmemoized items t)))
 
 (defn- expt-int [base pow]
   (loop [n pow, y 1, z base]
@@ -479,16 +508,20 @@ so that we can memoize over a series of calls."
        (zero? n) (*' z y)
        :else (recur n (*' z y) (*' z z))))))
 
-(defn count-subsets
-  "(count (subsets items)) but computed more directly"
+(defn- ^:dynamic count-subsets-unmemoized
   [items]
   (cond 
     (empty? items) 1
     (all-different? items) (expt-int 2 (count items))
-    :else (binding [count-combinations-from-frequencies
-                    (memoize count-combinations-from-frequencies)]
-            (apply + (for [i (range 0 (inc (count items)))]
-                       (count-combinations-unmemoized items i))))))          
+    :else (apply + (for [i (range 0 (inc (count items)))]
+                     (count-combinations-unmemoized items i)))))
+
+(defn count-subsets
+  "(count (subsets items)) but computed more directly"  
+  [items]
+  (binding [count-combinations-from-frequencies
+            (memoize count-combinations-from-frequencies)]
+    (count-subsets-unmemoized items)))
 
 (defn- nth-combination-distinct
   "The nth element of the sequence of t-combinations of items,
@@ -543,7 +576,7 @@ represented by freqs"
   (binding [count-combinations-from-frequencies (memoize count-combinations-from-frequencies)]
     (assert (< n (count-subsets items))
             (format "%s is too large. Input has only %s subsets."
-                    (str n) (str (count-subsets items))))
+                    (str n) (str (count-subsets-unmemoized items))))
     (loop [size 0,
            n n]
       (let [num-combinations (count-combinations-unmemoized items size)]
