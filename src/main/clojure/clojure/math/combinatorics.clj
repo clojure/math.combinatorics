@@ -576,13 +576,12 @@ represented by freqs"
   (assert (< n (count-subsets items))
           (format "%s is too large. Input has only %s subsets."
                   (str n) (str (count-subsets items))))
-  (binding [count-combinations-from-frequencies (memoize count-combinations-from-frequencies)]
-    (loop [size 0,
-           n n]
-      (let [num-combinations (count-combinations-unmemoized items size)]
-        (if (< n num-combinations)
-          (nth-combination items size n)
-          (recur (inc size) (- n num-combinations))))))) 
+  (loop [size 0,
+         n n]
+    (let [num-combinations (count-combinations items size)]
+      (if (< n num-combinations)
+        (nth-combination items size n)
+        (recur (inc size) (- n num-combinations)))))) 
 
 ;; Now let's go the other direction, from a sortable collection to the nth
 ;; position in which we would find the collection in the lexicographic sequence
