@@ -9,7 +9,7 @@ sequences for common combinatorial functions.
 Releases and Dependency Information
 ========================================
 
-Latest stable release: 0.0.9
+Latest stable release: 0.1.0
 
 * [All Released Versions](http://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22org.clojure%22%20AND%20a%3A%22math.combinatorics%22)
 
@@ -18,7 +18,7 @@ Latest stable release: 0.0.9
 [Leiningen](https://github.com/technomancy/leiningen) dependency information:
 
 ```clojure
-[org.clojure/math.combinatorics "0.0.9"]
+[org.clojure/math.combinatorics "0.1.0"]
 ```
 
 [Maven](http://maven.apache.org/) dependency information:
@@ -27,7 +27,7 @@ Latest stable release: 0.0.9
 <dependency>
   <groupId>org.clojure</groupId>
   <artifactId>math.combinatorics</artifactId>
-  <version>0.0.9</version>
+  <version>0.1.0</version>
 </dependency>
 ```
 
@@ -40,54 +40,106 @@ All functions return lazy sequences.
 (ns example.core
   (:require [clojure.math.combinatorics :as combo]))
 
-; all the unique ways of taking n different elements from items
+; PERMUTATIONS
+; all the unique arrangements of items
+=> (combo/permutations [1 2 3])
+([1 2 3] [1 3 2] [2 1 3] [2 3 1] [3 1 2] [3 2 1])
+
+; Note that permutations intelligently handles duplicate items
+=> (combo/permutations [1 1 2])
+([1 1 2] [1 2 1] [2 1 1])
+
+; These functions are more efficient than calling count, nth, drop
+; on the underlying sequence
+=> (combo/count-permutations [1 2 3])
+6
+=> (combo/count-permutations [1 1 2])
+3
+=> (combo/nth-permutation [1 2 3] 3)
+[2 3 1]
+=> (combo/nth-permutation [1 1 2 2] 5)
+[2 2 1 1]
+=> (combo/drop-permutations [1 2 3] 3)
+([2 3 1] [3 1 2] [3 2 1])
+
+; For a sortable collection of items, you can find out where it is
+; in the lexicographic sequence of permutations
+=> (combo/permutation-index [\a \b \a \c \a \b])
+16
+=> (combo/nth-permutation [\a \a \a \b \b \c] 16)
+[\a \b \a \c \a \b]
+ 
+
+; COMBINATIONS
+; all the unique ways of taking t different elements from items
 (combo/combinations [1 2 3] 2)
 ;;=> ((1 2) (1 3) (2 3))
 
+; Note that combinations intelligently handles duplicate items
+; treating the input list as a representation of a 'multiset'
+ => (combo/combinations [1 1 1 2 2] 3)
+((1 1 1) (1 1 2) (1 2 2))
+
+; These functions are more efficient than calling count and nth
+; on the underlying sequence
+=> (combo/count-combinations [1 1 1 2 2] 3)
+3
+=> (combo/nth-combination [1 2 3 4 5] 2 5)
+[2 4]
+
+; SUBSETS
 ; all the subsets of items
-(combo/subsets [1 2 3])
-;;=> (() (1) (2) (3) (1 2) (1 3) (2 3) (1 2 3))
+=> (combo/subsets [1 2 3])
+(() (1) (2) (3) (1 2) (1 3) (2 3) (1 2 3))
 
+; Note that subsets intelligently handles duplicate items
+; treating the input list as a representation of a 'multiset'
+=> (combo/subsets [1 1 2])
+(() (1) (2) (1 1) (1 2) (1 1 2))
+
+; These functions are more efficient than calling count and nth
+; on the underlying sequence
+=> (combo/count-subsets [1 1 2])
+6
+=> (combo/nth-subset [1 1 2] 3)
+[1 1]
+
+; CARTESIAN PRODUCT
 ; all the ways to take one item from each passed-in sequence
-(combo/cartesian-product [1 2] [3 4])
-;;=> ((1 3) (1 4) (2 3) (2 4))
+=> (combo/cartesian-product [1 2] [3 4])
+((1 3) (1 4) (2 3) (2 4))
 
+; SELECTIONS
 ; all the ways to take n (possibly the same) items from the sequence of items
-(combo/selections [1 2] 3)
-;;=> ((1 1 1) (1 1 2) (1 2 1) (1 2 2) (2 1 1) (2 1 2) (2 2 1) (2 2 2))
+=> (combo/selections [1 2] 3)
+((1 1 1) (1 1 2) (1 2 1) (1 2 2) (2 1 1) (2 1 2) (2 2 1) (2 2 2))
 
-; all the permutations of items
-(combo/permutations [1 2 3])
-;;=> ([1 2 3] [1 3 2] [2 1 3] [2 3 1] [3 1 2] [3 2 1])
-(combo/permutations [1 1 2])
-;;=> ([1 1 2] [1 2 1] [2 1 1])
-
+; PARTITIONS
 ; all the partitions of items.
-(combo/partitions [1 2 3])
-;;=> (([1 2 3])
-      ([1 2] [3])
-      ([1 3] [2])
-      ([1] [2 3])
-      ([1] [2] [3]))
-(combo/partitions [1 1 2])
-;;=> (([1 1 2])
-      ([1 1] [2])
-      ([1 2] [1])
-      ([1] [1] [2]))
+=> (combo/partitions [1 2 3])
+(([1 2 3])
+ ([1 2] [3])
+ ([1 3] [2])
+ ([1] [2 3])
+ ([1] [2] [3]))
+ 
+ ; Note that partitions intelligently handles duplicate items
+=> (combo/partitions [1 1 2])
+(([1 1 2])
+ ([1 1] [2])
+ ([1 2] [1])
+ ([1] [1] [2]))
+ 
+ ; You can also specify a min and max number of partitions
 (combo/partitions [1 1 2 2] :min 2 :max 3)
-;;=> (([1 1 2] [2])
-   	  ([1 1] [2 2])
-      ([1 1] [2] [2])
-      ([1 2 2] [1])
-      ([1 2] [1 2])
-      ([1 2] [1] [2])
-      ([1] [1] [2 2]))
+(([1 1 2] [2])
+ ([1 1] [2 2])
+ ([1 1] [2] [2])
+ ([1 2 2] [1])
+ ([1 2] [1 2])
+ ([1 2] [1] [2])
+ ([1] [1] [2 2]))
 ```
-
-Note that `permutations` and `partitions` intelligently handle inputs with duplicate items,
-using a more sophisticated algorithm that will produce only distinct permutations/partitions.
-The other functions do not do this, and will produce duplicates in the output if the input has 
-duplicate items.
 
 Refer to docstrings in the `clojure.math.combinatorics` namespace for
 additional documentation.
@@ -107,6 +159,12 @@ Developer Information
 
 Changelog
 ========================================
+* Release 0.1.0 on 2015-03-17
+  * combinations and subsets now have special handling for duplicate items
+  * Added count-permutations, count-combinations, count-subsets,
+     nth-permutation, nth-combination, nth-subset
+     drop-permutations, permutation-index
+     
 * Release 0.0.9 on 2015-03-16
   * Exclude "update" function from core for compatibility with 1.7.
   
