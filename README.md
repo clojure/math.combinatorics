@@ -9,7 +9,7 @@ sequences for common combinatorial functions.
 Releases and Dependency Information
 ========================================
 
-Latest stable release: 0.1.0
+Latest stable release: 0.1.1
 
 * [All Released Versions](http://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22org.clojure%22%20AND%20a%3A%22math.combinatorics%22)
 
@@ -18,7 +18,7 @@ Latest stable release: 0.1.0
 [Leiningen](https://github.com/technomancy/leiningen) dependency information:
 
 ```clojure
-[org.clojure/math.combinatorics "0.1.0"]
+[org.clojure/math.combinatorics "0.1.1"]
 ```
 
 [Maven](http://maven.apache.org/) dependency information:
@@ -27,7 +27,7 @@ Latest stable release: 0.1.0
 <dependency>
   <groupId>org.clojure</groupId>
   <artifactId>math.combinatorics</artifactId>
-  <version>0.1.0</version>
+  <version>0.1.1</version>
 </dependency>
 ```
 
@@ -159,6 +159,9 @@ Developer Information
 
 Changelog
 ========================================
+* Release 0.1.1 on 2015-03-20
+  * Backwards compatibility with 1.2.0 and 1.2.1
+  
 * Release 0.1.0 on 2015-03-17
   * combinations and subsets now have special handling for duplicate items
   * Added count-permutations, count-combinations, count-subsets,
