@@ -95,6 +95,10 @@ to write our own version that considers the empty-list to be distinct"
     `(when-not ~x
        (throw (new AssertionError (str "Assert failed: " ~message "\n" (pr-str '~x)))))))
 
+;; so this code works with both 1.2.x and 1.3.0:
+(def ^{:private true} plus (first [+' +]))
+(def ^{:private true} mult (first [*' *]))
+
 (defn- index-combinations
   [n cnt]
   (lazy-seq
@@ -305,7 +309,7 @@ In prior versions of the combinatorics library, there were two similar functions
 (defn- factorial [n]
   {:pre [(integer? n) (not (neg? n))]}
   (loop [acc 1, n n]
-    (if (zero? n) acc (recur (*' acc n) (dec n)))))
+    (if (zero? n) acc (recur (mult acc n) (dec n)))))
 
 (defn- factorial-numbers
   "Input is a non-negative base 10 integer, output is the number in the
@@ -475,8 +479,8 @@ output is nth-permutation (0-based)"
     (zero? k) 1
     (= k 1) n
     (> k (quot n 2)) (recur n (- n k))
-    :else (/ (apply *' (range (inc (- n k)) (inc n)))
-             (apply *' (range 1 (inc k))))))
+    :else (/ (apply mult (range (inc (- n k)) (inc n)))
+             (apply mult (range 1 (inc k))))))
 
 (defn- ^{:dynamic true} count-combinations-from-frequencies [freqs t]
   (let [counts (vals freqs)
@@ -490,8 +494,8 @@ output is nth-permutation (0-based)"
       (= (count freqs) 1) 1
       :else
       (let [new-freqs (dec-key freqs (first (keys freqs)))]
-        (+ (count-combinations-from-frequencies new-freqs (dec t))
-           (count-combinations-from-frequencies (dissoc freqs (first (keys freqs))) t))))))
+        (plus (count-combinations-from-frequencies new-freqs (dec t))
+              (count-combinations-from-frequencies (dissoc freqs (first (keys freqs))) t))))))
 
 (defn- count-combinations-unmemoized
   "We need an internal version that doesn't memoize each call to count-combinations-from-frequencies
@@ -511,17 +515,17 @@ so that we can memoize over a series of calls."
   (loop [n pow, y 1, z base]
     (let [t (even? n), n (quot n 2)]
       (cond
-       t (recur n y (*' z z))
-       (zero? n) (*' z y)
-       :else (recur n (*' z y) (*' z z))))))
+       t (recur n y (mult z z))
+       (zero? n) (mult z y)
+       :else (recur n (mult z y) (mult z z))))))
 
 (defn- count-subsets-unmemoized
   [items]
   (cond 
     (empty? items) 1
     (all-different? items) (expt-int 2 (count items))
-    :else (apply + (for [i (range 0 (inc (count items)))]
-                     (count-combinations-unmemoized items i)))))
+    :else (apply plus (for [i (range 0 (inc (count items)))]
+                        (count-combinations-unmemoized items i)))))
 
 (defn count-subsets
   "(count (subsets items)) but computed more directly"  
