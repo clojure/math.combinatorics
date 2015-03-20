@@ -515,7 +515,7 @@ so that we can memoize over a series of calls."
        (zero? n) (*' z y)
        :else (recur n (*' z y) (*' z z))))))
 
-(defn- ^:dynamic count-subsets-unmemoized
+(defn- count-subsets-unmemoized
   [items]
   (cond 
     (empty? items) 1
