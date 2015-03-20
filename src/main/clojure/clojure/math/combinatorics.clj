@@ -478,7 +478,7 @@ output is nth-permutation (0-based)"
     :else (/ (apply *' (range (inc (- n k)) (inc n)))
              (apply *' (range 1 (inc k))))))
 
-(defn- ^:dynamic count-combinations-from-frequencies [freqs t]
+(defn- ^{:dynamic true} count-combinations-from-frequencies [freqs t]
   (let [counts (vals freqs)
         sum (apply + counts)]
     (cond 
