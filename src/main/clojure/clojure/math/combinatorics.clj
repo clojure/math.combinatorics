@@ -88,6 +88,13 @@ to write our own version that considers the empty-list to be distinct"
     (apply distinct? s)
     true))
 
+(defmacro assert-with-message
+  "Clojure 1.2 didn't allow asserts with a message, so we roll our own here for backwards compatibility"
+  [x message]
+  (when *assert*
+    `(when-not ~x
+       (throw (new AssertionError (str "Assert failed: " ~message "\n" (pr-str '~x)))))))
+
 (defn- index-combinations
   [n cnt]
   (lazy-seq
@@ -321,9 +328,9 @@ expressed as a list of 'digits'"
   "Input should be a sorted sequential collection l of distinct items, 
 output is nth-permutation (0-based)"
   [l n]
-  (assert (< n (factorial (count l))) 
-          (format "%s is too large. Input has only %s permutations."
-                  (str n) (str (factorial (count l)))))
+  (assert-with-message (< n (factorial (count l))) 
+                       (format "%s is too large. Input has only %s permutations."
+                               (str n) (str (factorial (count l)))))
   (let [length (count l)
         fact-nums (factorial-numbers n)]
     (loop [indices (concat (repeat (- length (count fact-nums)) 0)
@@ -402,9 +409,9 @@ Output is a list of 'digits' in this wacky duplicate factorial number system"
   "Input should be a sorted sequential collection l of distinct items, 
 output is nth-permutation (0-based)"
   [l n]
-  (assert (< n (count-permutations l)) 
-          (format "%s is too large. Input has only %s permutations."
-                  (str n) (str (count-permutations l))))
+  (assert-with-message (< n (count-permutations l)) 
+                       (format "%s is too large. Input has only %s permutations."
+                               (str n) (str (count-permutations l))))
   (loop [freqs (into (sorted-map) (frequencies l)),
          indices (factorial-numbers-with-duplicates n freqs)
          perm []]
@@ -557,9 +564,9 @@ represented by freqs"
 (defn nth-combination
   "The nth element of the sequence of t-combinations of items"
   [items t n]
-  (assert (< n (count-combinations items t))
-          (format "%s is too large. Input has only %s combinations."
-                  (str n) (str (count-combinations-unmemoized items t))))
+  (assert-with-message (< n (count-combinations items t))
+                       (format "%s is too large. Input has only %s combinations."
+                               (str n) (str (count-combinations-unmemoized items t))))
   (if (all-different? items)
     (nth-combination-distinct items t n)
     (binding [count-combinations-from-frequencies (memoize count-combinations-from-frequencies)]
@@ -573,9 +580,9 @@ represented by freqs"
 
 (defn nth-subset
   [items n]
-  (assert (< n (count-subsets items))
-          (format "%s is too large. Input has only %s subsets."
-                  (str n) (str (count-subsets items))))
+  (assert-with-message (< n (count-subsets items))
+                       (format "%s is too large. Input has only %s subsets."
+                               (str n) (str (count-subsets items))))
   (loop [size 0,
          n n]
     (let [num-combinations (count-combinations items size)]
