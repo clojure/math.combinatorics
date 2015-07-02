@@ -6,6 +6,13 @@
   (are [x y] (= x y)
        (combinations [1 2 3] 2) '((1 2) (1 3) (2 3))))
 
+(deftest test-combinations-with-repeats
+  (are [x y] (= x y)
+             (combinations-with-repeats [[0 1 1 1] [0 1 0 1] [0 1 0 0] [0 1 0 0]] 2)
+             '(([0 1 1 1] [0 1 0 1]) ([0 1 1 1] [0 1 0 0]) ([0 1 1 1] [0 1 0 0]) ([0 1 0 1] [0 1 0 0]) ([0 1 0 1] [0 1 0 0]) ([0 1 0 0] [0 1 0 0]))
+             (combinations-with-repeats [[0 1 1 1] [0 1 0 1] [0 1 0 0] [0 1 0 0]] 3)
+             '(([0 1 1 1] [0 1 0 1] [0 1 0 0]) ([0 1 1 1] [0 1 0 1] [0 1 0 0]) ([0 1 1 1] [0 1 0 0] [0 1 0 0]) ([0 1 0 1] [0 1 0 0] [0 1 0 0]))))
+
 (defn old-subsets [l]
   (map (partial map deref) (subsets (map atom l)))) 
 
