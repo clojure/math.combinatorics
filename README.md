@@ -9,7 +9,7 @@ sequences for common combinatorial functions.
 Releases and Dependency Information
 ========================================
 
-Latest stable release: 0.1.1
+Latest stable release: 0.1.2
 
 * [All Released Versions](http://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22org.clojure%22%20AND%20a%3A%22math.combinatorics%22)
 
@@ -18,7 +18,7 @@ Latest stable release: 0.1.1
 [Leiningen](https://github.com/technomancy/leiningen) dependency information:
 
 ```clojure
-[org.clojure/math.combinatorics "0.1.1"]
+[org.clojure/math.combinatorics "0.1.2"]
 ```
 
 [Maven](http://maven.apache.org/) dependency information:
@@ -27,7 +27,7 @@ Latest stable release: 0.1.1
 <dependency>
   <groupId>org.clojure</groupId>
   <artifactId>math.combinatorics</artifactId>
-  <version>0.1.1</version>
+  <version>0.1.2</version>
 </dependency>
 ```
 
@@ -68,7 +68,7 @@ All functions return lazy sequences.
 16
 => (combo/nth-permutation [\a \a \a \b \b \c] 16)
 [\a \b \a \c \a \b]
- 
+
 
 ; COMBINATIONS
 ; all the unique ways of taking t different elements from items
@@ -122,14 +122,14 @@ All functions return lazy sequences.
  ([1 3] [2])
  ([1] [2 3])
  ([1] [2] [3]))
- 
+
  ; Note that partitions intelligently handles duplicate items
 => (combo/partitions [1 1 2])
 (([1 1 2])
  ([1 1] [2])
  ([1 2] [1])
  ([1] [1] [2]))
- 
+
  ; You can also specify a min and max number of partitions
 (combo/partitions [1 1 2 2] :min 2 :max 3)
 (([1 1 2] [2])
@@ -159,18 +159,22 @@ Developer Information
 
 Changelog
 ========================================
+* Release 0.1.2 on 2016-05-18
+  * Added explicit boxing to eliminate auto-boxing warnings. 
+    No change in functionality or performance from previous release.
+    
 * Release 0.1.1 on 2015-03-20
   * Backwards compatibility with 1.2.0 and 1.2.1
-  
+
 * Release 0.1.0 on 2015-03-17
   * combinations and subsets now have special handling for duplicate items
   * Added count-permutations, count-combinations, count-subsets,
      nth-permutation, nth-combination, nth-subset
      drop-permutations, permutation-index
-     
+
 * Release 0.0.9 on 2015-03-16
   * Exclude "update" function from core for compatibility with 1.7.
-  
+
 * Release 0.0.8 on 2014-07-20
   * Minor improvement of helper function used by permutations.
 

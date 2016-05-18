@@ -2,7 +2,7 @@
 ;;; sequences for common combinatorial functions.
 
 ;; by Mark Engelberg (mark.engelberg@gmail.com)
-;; Last updated - March 20, 2015
+;; Last updated - May 18, 2016
 
 (ns
   #^{:author "Mark Engelberg",
@@ -209,7 +209,7 @@ collected."
     (when (seq s)
       (cons (first s) (unchunk (rest s))))))
 
-            (defn subsets
+(defn subsets
   "All the subsets of items"
   [items]
   (mapcat (fn [n] (combinations items n))
@@ -274,7 +274,7 @@ In prior versions of the combinatorics library, there were two similar functions
 (defn- sorted-numbers?
   "Returns true iff s is a sequence of numbers in non-decreasing order"
   [s]
-              (and (every? number? s)
+  (and (every? number? s)
        (or (empty? s) (apply <= s))))
 
 (defn- multi-perm
@@ -308,7 +308,7 @@ In prior versions of the combinatorics library, there were two similar functions
 
 (defn- factorial [n]
   {:pre [(integer? n) (not (neg? n))]}
-  (loop [acc 1, n n]
+  (loop [acc (Long. 1), n n]
     (if (zero? n) acc (recur (mult acc n) (dec n)))))
 
 (defn- factorial-numbers
@@ -512,7 +512,7 @@ so that we can memoize over a series of calls."
     (count-combinations-unmemoized items t)))
 
 (defn- expt-int [base pow]
-  (loop [n pow, y 1, z base]
+  (loop [n pow, y (Long. 1), z base]
     (let [t (even? n), n (quot n 2)]
       (cond
        t (recur n y (mult z z))
@@ -608,7 +608,7 @@ represented by freqs"
 
 (defn- permutation-index-distinct
   [l]
-  (loop [l l, index 0, n (dec (count l))]
+  (loop [l l, index (Long. 0), n (dec (count l))]
     (if (empty? l) index
       (recur (rest l) 
              (+ index (* (factorial n) (list-index (sort l) (first l))))
@@ -616,7 +616,7 @@ represented by freqs"
 
 (defn- permutation-index-duplicates
   [l]
-  (loop [l l, index 0, freqs (into (sorted-map) (frequencies l))]
+  (loop [l l, index (Long. 0), freqs (into (sorted-map) (frequencies l))]
     (if (empty? l) index
       (recur (rest l)
              (reduce + index 
