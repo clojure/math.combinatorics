@@ -6,14 +6,14 @@
    :wiki-url
    "http://clojure.github.com/math.combinatorics/clojure.math.combinatorics-api.html",
    :source-url
-   "https://github.com/clojure/math.combinatorics/blob/c1cd45a648d075d2124530d8912356c8a3ec8410/src/main/clojure/clojure/math/combinatorics.clj"}),
+   "https://github.com/clojure/math.combinatorics/blob/ab136a0cdf5a92daec0856ae557c81982b4613ee/src/main/clojure/clojure/math/combinatorics.clj"}),
  :vars
  ({:raw-source-url
-   "https://github.com/clojure/math.combinatorics/raw/c1cd45a648d075d2124530d8912356c8a3ec8410/src/main/clojure/clojure/math/combinatorics.clj",
+   "https://github.com/clojure/math.combinatorics/raw/ab136a0cdf5a92daec0856ae557c81982b4613ee/src/main/clojure/clojure/math/combinatorics.clj",
    :name "assert-with-message",
    :file "src/main/clojure/clojure/math/combinatorics.clj",
    :source-url
-   "https://github.com/clojure/math.combinatorics/blob/c1cd45a648d075d2124530d8912356c8a3ec8410/src/main/clojure/clojure/math/combinatorics.clj#L91",
+   "https://github.com/clojure/math.combinatorics/blob/ab136a0cdf5a92daec0856ae557c81982b4613ee/src/main/clojure/clojure/math/combinatorics.clj#L91",
    :line 91,
    :var-type "macro",
    :arglists ([x message]),
@@ -23,11 +23,11 @@
    :wiki-url
    "http://clojure.github.com/math.combinatorics//clojure.math.combinatorics-api.html#clojure.math.combinatorics/assert-with-message"}
   {:raw-source-url
-   "https://github.com/clojure/math.combinatorics/raw/c1cd45a648d075d2124530d8912356c8a3ec8410/src/main/clojure/clojure/math/combinatorics.clj",
+   "https://github.com/clojure/math.combinatorics/raw/ab136a0cdf5a92daec0856ae557c81982b4613ee/src/main/clojure/clojure/math/combinatorics.clj",
    :name "cartesian-product",
    :file "src/main/clojure/clojure/math/combinatorics.clj",
    :source-url
-   "https://github.com/clojure/math.combinatorics/blob/c1cd45a648d075d2124530d8912356c8a3ec8410/src/main/clojure/clojure/math/combinatorics.clj#L218",
+   "https://github.com/clojure/math.combinatorics/blob/ab136a0cdf5a92daec0856ae557c81982b4613ee/src/main/clojure/clojure/math/combinatorics.clj#L218",
    :line 218,
    :var-type "function",
    :arglists ([& seqs]),
@@ -36,11 +36,11 @@
    :wiki-url
    "http://clojure.github.com/math.combinatorics//clojure.math.combinatorics-api.html#clojure.math.combinatorics/cartesian-product"}
   {:raw-source-url
-   "https://github.com/clojure/math.combinatorics/raw/c1cd45a648d075d2124530d8912356c8a3ec8410/src/main/clojure/clojure/math/combinatorics.clj",
+   "https://github.com/clojure/math.combinatorics/raw/ab136a0cdf5a92daec0856ae557c81982b4613ee/src/main/clojure/clojure/math/combinatorics.clj",
    :name "combinations",
    :file "src/main/clojure/clojure/math/combinatorics.clj",
    :source-url
-   "https://github.com/clojure/math.combinatorics/blob/c1cd45a648d075d2124530d8912356c8a3ec8410/src/main/clojure/clojure/math/combinatorics.clj#L187",
+   "https://github.com/clojure/math.combinatorics/blob/ab136a0cdf5a92daec0856ae557c81982b4613ee/src/main/clojure/clojure/math/combinatorics.clj#L187",
    :line 187,
    :var-type "function",
    :arglists ([items t]),
@@ -50,12 +50,12 @@
    :wiki-url
    "http://clojure.github.com/math.combinatorics//clojure.math.combinatorics-api.html#clojure.math.combinatorics/combinations"}
   {:raw-source-url
-   "https://github.com/clojure/math.combinatorics/raw/c1cd45a648d075d2124530d8912356c8a3ec8410/src/main/clojure/clojure/math/combinatorics.clj",
+   "https://github.com/clojure/math.combinatorics/raw/ab136a0cdf5a92daec0856ae557c81982b4613ee/src/main/clojure/clojure/math/combinatorics.clj",
    :name "count-combinations",
    :file "src/main/clojure/clojure/math/combinatorics.clj",
    :source-url
-   "https://github.com/clojure/math.combinatorics/blob/c1cd45a648d075d2124530d8912356c8a3ec8410/src/main/clojure/clojure/math/combinatorics.clj#L508",
-   :line 508,
+   "https://github.com/clojure/math.combinatorics/blob/ab136a0cdf5a92daec0856ae557c81982b4613ee/src/main/clojure/clojure/math/combinatorics.clj#L509",
+   :line 509,
    :var-type "function",
    :arglists ([items t]),
    :doc "(count (combinations items t)) but computed more directly",
@@ -63,12 +63,12 @@
    :wiki-url
    "http://clojure.github.com/math.combinatorics//clojure.math.combinatorics-api.html#clojure.math.combinatorics/count-combinations"}
   {:raw-source-url
-   "https://github.com/clojure/math.combinatorics/raw/c1cd45a648d075d2124530d8912356c8a3ec8410/src/main/clojure/clojure/math/combinatorics.clj",
+   "https://github.com/clojure/math.combinatorics/raw/ab136a0cdf5a92daec0856ae557c81982b4613ee/src/main/clojure/clojure/math/combinatorics.clj",
    :name "count-permutations",
    :file "src/main/clojure/clojure/math/combinatorics.clj",
    :source-url
-   "https://github.com/clojure/math.combinatorics/blob/c1cd45a648d075d2124530d8912356c8a3ec8410/src/main/clojure/clojure/math/combinatorics.clj#L356",
-   :line 356,
+   "https://github.com/clojure/math.combinatorics/blob/ab136a0cdf5a92daec0856ae557c81982b4613ee/src/main/clojure/clojure/math/combinatorics.clj#L357",
+   :line 357,
    :var-type "function",
    :arglists ([l]),
    :doc "Counts the number of distinct permutations of l",
@@ -76,12 +76,12 @@
    :wiki-url
    "http://clojure.github.com/math.combinatorics//clojure.math.combinatorics-api.html#clojure.math.combinatorics/count-permutations"}
   {:raw-source-url
-   "https://github.com/clojure/math.combinatorics/raw/c1cd45a648d075d2124530d8912356c8a3ec8410/src/main/clojure/clojure/math/combinatorics.clj",
+   "https://github.com/clojure/math.combinatorics/raw/ab136a0cdf5a92daec0856ae557c81982b4613ee/src/main/clojure/clojure/math/combinatorics.clj",
    :name "count-subsets",
    :file "src/main/clojure/clojure/math/combinatorics.clj",
    :source-url
-   "https://github.com/clojure/math.combinatorics/blob/c1cd45a648d075d2124530d8912356c8a3ec8410/src/main/clojure/clojure/math/combinatorics.clj#L530",
-   :line 530,
+   "https://github.com/clojure/math.combinatorics/blob/ab136a0cdf5a92daec0856ae557c81982b4613ee/src/main/clojure/clojure/math/combinatorics.clj#L531",
+   :line 531,
    :var-type "function",
    :arglists ([items]),
    :doc "(count (subsets items)) but computed more directly",
@@ -89,12 +89,12 @@
    :wiki-url
    "http://clojure.github.com/math.combinatorics//clojure.math.combinatorics-api.html#clojure.math.combinatorics/count-subsets"}
   {:raw-source-url
-   "https://github.com/clojure/math.combinatorics/raw/c1cd45a648d075d2124530d8912356c8a3ec8410/src/main/clojure/clojure/math/combinatorics.clj",
+   "https://github.com/clojure/math.combinatorics/raw/ab136a0cdf5a92daec0856ae557c81982b4613ee/src/main/clojure/clojure/math/combinatorics.clj",
    :name "drop-permutations",
    :file "src/main/clojure/clojure/math/combinatorics.clj",
    :source-url
-   "https://github.com/clojure/math.combinatorics/blob/c1cd45a648d075d2124530d8912356c8a3ec8410/src/main/clojure/clojure/math/combinatorics.clj#L449",
-   :line 449,
+   "https://github.com/clojure/math.combinatorics/blob/ab136a0cdf5a92daec0856ae557c81982b4613ee/src/main/clojure/clojure/math/combinatorics.clj#L450",
+   :line 450,
    :var-type "function",
    :arglists ([items n]),
    :doc "(drop n (permutations items)) but calculated more directly.",
@@ -102,12 +102,12 @@
    :wiki-url
    "http://clojure.github.com/math.combinatorics//clojure.math.combinatorics-api.html#clojure.math.combinatorics/drop-permutations"}
   {:raw-source-url
-   "https://github.com/clojure/math.combinatorics/raw/c1cd45a648d075d2124530d8912356c8a3ec8410/src/main/clojure/clojure/math/combinatorics.clj",
+   "https://github.com/clojure/math.combinatorics/raw/ab136a0cdf5a92daec0856ae557c81982b4613ee/src/main/clojure/clojure/math/combinatorics.clj",
    :name "nth-combination",
    :file "src/main/clojure/clojure/math/combinatorics.clj",
    :source-url
-   "https://github.com/clojure/math.combinatorics/blob/c1cd45a648d075d2124530d8912356c8a3ec8410/src/main/clojure/clojure/math/combinatorics.clj#L568",
-   :line 568,
+   "https://github.com/clojure/math.combinatorics/blob/ab136a0cdf5a92daec0856ae557c81982b4613ee/src/main/clojure/clojure/math/combinatorics.clj#L569",
+   :line 569,
    :var-type "function",
    :arglists ([items t n]),
    :doc "The nth element of the sequence of t-combinations of items",
@@ -115,12 +115,12 @@
    :wiki-url
    "http://clojure.github.com/math.combinatorics//clojure.math.combinatorics-api.html#clojure.math.combinatorics/nth-combination"}
   {:raw-source-url
-   "https://github.com/clojure/math.combinatorics/raw/c1cd45a648d075d2124530d8912356c8a3ec8410/src/main/clojure/clojure/math/combinatorics.clj",
+   "https://github.com/clojure/math.combinatorics/raw/ab136a0cdf5a92daec0856ae557c81982b4613ee/src/main/clojure/clojure/math/combinatorics.clj",
    :name "nth-permutation",
    :file "src/main/clojure/clojure/math/combinatorics.clj",
    :source-url
-   "https://github.com/clojure/math.combinatorics/blob/c1cd45a648d075d2124530d8912356c8a3ec8410/src/main/clojure/clojure/math/combinatorics.clj#L431",
-   :line 431,
+   "https://github.com/clojure/math.combinatorics/blob/ab136a0cdf5a92daec0856ae557c81982b4613ee/src/main/clojure/clojure/math/combinatorics.clj#L432",
+   :line 432,
    :var-type "function",
    :arglists ([items n]),
    :doc "(nth (permutations items)) but calculated more directly.",
@@ -128,12 +128,12 @@
    :wiki-url
    "http://clojure.github.com/math.combinatorics//clojure.math.combinatorics-api.html#clojure.math.combinatorics/nth-permutation"}
   {:raw-source-url
-   "https://github.com/clojure/math.combinatorics/raw/c1cd45a648d075d2124530d8912356c8a3ec8410/src/main/clojure/clojure/math/combinatorics.clj",
+   "https://github.com/clojure/math.combinatorics/raw/ab136a0cdf5a92daec0856ae557c81982b4613ee/src/main/clojure/clojure/math/combinatorics.clj",
    :name "partitions",
    :file "src/main/clojure/clojure/math/combinatorics.clj",
    :source-url
-   "https://github.com/clojure/math.combinatorics/blob/c1cd45a648d075d2124530d8912356c8a3ec8410/src/main/clojure/clojure/math/combinatorics.clj#L915",
-   :line 915,
+   "https://github.com/clojure/math.combinatorics/blob/ab136a0cdf5a92daec0856ae557c81982b4613ee/src/main/clojure/clojure/math/combinatorics.clj#L916",
+   :line 916,
    :var-type "function",
    :arglists ([items & args]),
    :doc
@@ -142,12 +142,12 @@
    :wiki-url
    "http://clojure.github.com/math.combinatorics//clojure.math.combinatorics-api.html#clojure.math.combinatorics/partitions"}
   {:raw-source-url
-   "https://github.com/clojure/math.combinatorics/raw/c1cd45a648d075d2124530d8912356c8a3ec8410/src/main/clojure/clojure/math/combinatorics.clj",
+   "https://github.com/clojure/math.combinatorics/raw/ab136a0cdf5a92daec0856ae557c81982b4613ee/src/main/clojure/clojure/math/combinatorics.clj",
    :name "permutation-index",
    :file "src/main/clojure/clojure/math/combinatorics.clj",
    :source-url
-   "https://github.com/clojure/math.combinatorics/blob/c1cd45a648d075d2124530d8912356c8a3ec8410/src/main/clojure/clojure/math/combinatorics.clj#L627",
-   :line 627,
+   "https://github.com/clojure/math.combinatorics/blob/ab136a0cdf5a92daec0856ae557c81982b4613ee/src/main/clojure/clojure/math/combinatorics.clj#L628",
+   :line 628,
    :var-type "function",
    :arglists ([items]),
    :doc
@@ -156,11 +156,11 @@
    :wiki-url
    "http://clojure.github.com/math.combinatorics//clojure.math.combinatorics-api.html#clojure.math.combinatorics/permutation-index"}
   {:raw-source-url
-   "https://github.com/clojure/math.combinatorics/raw/c1cd45a648d075d2124530d8912356c8a3ec8410/src/main/clojure/clojure/math/combinatorics.clj",
+   "https://github.com/clojure/math.combinatorics/raw/ab136a0cdf5a92daec0856ae557c81982b4613ee/src/main/clojure/clojure/math/combinatorics.clj",
    :name "permutations",
    :file "src/main/clojure/clojure/math/combinatorics.clj",
    :source-url
-   "https://github.com/clojure/math.combinatorics/blob/c1cd45a648d075d2124530d8912356c8a3ec8410/src/main/clojure/clojure/math/combinatorics.clj#L290",
+   "https://github.com/clojure/math.combinatorics/blob/ab136a0cdf5a92daec0856ae557c81982b4613ee/src/main/clojure/clojure/math/combinatorics.clj#L290",
    :line 290,
    :var-type "function",
    :arglists ([items]),
@@ -170,11 +170,11 @@
    :wiki-url
    "http://clojure.github.com/math.combinatorics//clojure.math.combinatorics-api.html#clojure.math.combinatorics/permutations"}
   {:raw-source-url
-   "https://github.com/clojure/math.combinatorics/raw/c1cd45a648d075d2124530d8912356c8a3ec8410/src/main/clojure/clojure/math/combinatorics.clj",
+   "https://github.com/clojure/math.combinatorics/raw/ab136a0cdf5a92daec0856ae557c81982b4613ee/src/main/clojure/clojure/math/combinatorics.clj",
    :name "selections",
    :file "src/main/clojure/clojure/math/combinatorics.clj",
    :source-url
-   "https://github.com/clojure/math.combinatorics/blob/c1cd45a648d075d2124530d8912356c8a3ec8410/src/main/clojure/clojure/math/combinatorics.clj#L238",
+   "https://github.com/clojure/math.combinatorics/blob/ab136a0cdf5a92daec0856ae557c81982b4613ee/src/main/clojure/clojure/math/combinatorics.clj#L238",
    :line 238,
    :var-type "function",
    :arglists ([items n]),
@@ -184,11 +184,11 @@
    :wiki-url
    "http://clojure.github.com/math.combinatorics//clojure.math.combinatorics-api.html#clojure.math.combinatorics/selections"}
   {:raw-source-url
-   "https://github.com/clojure/math.combinatorics/raw/c1cd45a648d075d2124530d8912356c8a3ec8410/src/main/clojure/clojure/math/combinatorics.clj",
+   "https://github.com/clojure/math.combinatorics/raw/ab136a0cdf5a92daec0856ae557c81982b4613ee/src/main/clojure/clojure/math/combinatorics.clj",
    :name "subsets",
    :file "src/main/clojure/clojure/math/combinatorics.clj",
    :source-url
-   "https://github.com/clojure/math.combinatorics/blob/c1cd45a648d075d2124530d8912356c8a3ec8410/src/main/clojure/clojure/math/combinatorics.clj#L212",
+   "https://github.com/clojure/math.combinatorics/blob/ab136a0cdf5a92daec0856ae557c81982b4613ee/src/main/clojure/clojure/math/combinatorics.clj#L212",
    :line 212,
    :var-type "function",
    :arglists ([items]),
