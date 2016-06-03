@@ -9,7 +9,7 @@ sequences for common combinatorial functions.
 Releases and Dependency Information
 ========================================
 
-Latest stable release: 0.1.2
+Latest stable release: 0.1.3
 
 * [All Released Versions](http://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22org.clojure%22%20AND%20a%3A%22math.combinatorics%22)
 
@@ -18,7 +18,7 @@ Latest stable release: 0.1.2
 [Leiningen](https://github.com/technomancy/leiningen) dependency information:
 
 ```clojure
-[org.clojure/math.combinatorics "0.1.2"]
+[org.clojure/math.combinatorics "0.1.3"]
 ```
 
 [Maven](http://maven.apache.org/) dependency information:
@@ -159,10 +159,13 @@ Developer Information
 
 Changelog
 ========================================
+* Release 0.1.3 on 2016-06-02
+  * Changed boxing to use Long/valueOf.
+  
 * Release 0.1.2 on 2016-05-18
-  * Added explicit boxing to eliminate auto-boxing warnings. 
+  * Added explicit boxing to eliminate auto-boxing warnings.
     No change in functionality or performance from previous release.
-    
+
 * Release 0.1.1 on 2015-03-20
   * Backwards compatibility with 1.2.0 and 1.2.1
 
