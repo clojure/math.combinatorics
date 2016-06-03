@@ -308,8 +308,8 @@ In prior versions of the combinatorics library, there were two similar functions
 
 (defn- factorial [n]
   {:pre [(integer? n) (not (neg? n))]}
-  ; (Long/valueOf 1) eliminates loop auto-boxing warning, in a way compatible with Clojure 1.2
-  (loop [acc (Long/valueOf 1), n n] 
+  ; (Long/valueOf (long 1)) eliminates loop auto-boxing warning, in a way compatible with Clojure 1.2
+  (loop [acc (Long/valueOf (long 1)), n n] 
     (if (zero? n) acc (recur (mult acc n) (dec n)))))
 
 (defn- factorial-numbers
@@ -513,7 +513,7 @@ so that we can memoize over a series of calls."
     (count-combinations-unmemoized items t)))
 
 (defn- expt-int [base pow]
-  (loop [n pow, y (Long/valueOf 1), z base]
+  (loop [n pow, y (Long/valueOf (long 1)), z base]
     (let [t (even? n), n (quot n 2)]
       (cond
        t (recur n y (mult z z))
@@ -609,7 +609,7 @@ represented by freqs"
 
 (defn- permutation-index-distinct
   [l]
-  (loop [l l, index (Long/valueOf 0), n (dec (count l))]
+  (loop [l l, index (Long/valueOf (long 0)), n (dec (count l))]
     (if (empty? l) index
       (recur (rest l) 
              (+ index (* (factorial n) (list-index (sort l) (first l))))
@@ -617,7 +617,7 @@ represented by freqs"
 
 (defn- permutation-index-duplicates
   [l]
-  (loop [l l, index (Long/valueOf 0), freqs (into (sorted-map) (frequencies l))]
+  (loop [l l, index (Long/valueOf (long 0)), freqs (into (sorted-map) (frequencies l))]
     (if (empty? l) index
       (recur (rest l)
              (reduce + index 
