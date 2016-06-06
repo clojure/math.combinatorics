@@ -1,7 +1,7 @@
 <html>
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>clojure.math.combinatorics - Lazy sequences for common combinatorial functions 0.1.3 API documentation</title>
+    <title>clojure.math.combinatorics - Lazy sequences for common combinatorial functions 0.1.4 API documentation</title>
     <link rel="icon" href="static/favicon.png" />
     <link rel="shortcut icon" href="static/favicon.png" />
     <link rel="stylesheet" href="static/clojure.css" type="text/css" media="all" />
@@ -25,7 +25,7 @@ namespace.
       <div id="leftcolumn"><div style="text-align: center;"></div>
 <div class="menu">
   <div class="WikiCustomNav WikiElement wiki">
-    <span class="toc-header"><span id="project-name">Lazy sequences for common combinatorial functions</span> <span id="version">0.1.3</span> API</span><br />
+    <span class="toc-header"><span id="project-name">Lazy sequences for common combinatorial functions</span> <span id="version">0.1.4</span> API</span><br />
     <ul>
       <li><a href="index.html" class="wiki_link">Overview</a></li>
       <li><a href="api-index.html" class="wiki_link">API Index</a></li>
@@ -96,11 +96,14 @@ namespace.
       <a href="#clojure.math.combinatorics/subsets" class="toc-entry-anchor">subsets</a>
       
     </div>
+  </div><div class="toc-section" style="margin-left: 1em;">
+    <a style="margin-top: 3px;" href="#"></a>
+    
   </div>
 </div>
 </div>
                 <div id="content-tag"><h1 id="overview">API for <span id="clojure.math.combinatorics">clojure.math.combinatorics</span>
-  - <span id="header-project">Lazy sequences for common combinatorial functions</span> <span id="header-version">0.1.3</span><span id="header-status-block"> (<span id="header-status">in development</span>)</span>
+  - <span id="header-project">Lazy sequences for common combinatorial functions</span> <span id="header-version">0.1.4</span><span id="header-status-block"> (<span id="header-status">in development</span>)</span>
   </h1>
 <span id="author-line">by <span id="author-name">Mark Engelberg</span><br /></span>
 <br />Full namespace name: <span id="long-name">clojure.math.combinatorics</span>
@@ -127,9 +130,10 @@ for a longer description.)</pre>
     <pre id="var-usage">Usage: (assert-with-message x message)
 </pre>
     <pre id="var-docstr">Clojure 1.2 didn't allow asserts with a message, so we roll our own here for backwards compatibility</pre>
+    <pre id="var-specs"></pre>
     
     
-    <a id="var-source" href="https://github.com/clojure/math.combinatorics/blob/ab136a0cdf5a92daec0856ae557c81982b4613ee/src/main/clojure/clojure/math/combinatorics.clj#L91">Source</a>
+    <a id="var-source" href="https://github.com/clojure/math.combinatorics/blob/5ade6ceb370e8290b1c6978da800aca892cd68a3/src/main/clojure/clojure/math/combinatorics.clj#L91">Source</a>
   </div><div id="var-entry">
     <br />
     <hr />
@@ -138,9 +142,10 @@ for a longer description.)</pre>
     <pre id="var-usage">Usage: (cartesian-product &amp; seqs)
 </pre>
     <pre id="var-docstr">All the ways to take one item from each sequence</pre>
+    <pre id="var-specs"></pre>
     
     
-    <a id="var-source" href="https://github.com/clojure/math.combinatorics/blob/ab136a0cdf5a92daec0856ae557c81982b4613ee/src/main/clojure/clojure/math/combinatorics.clj#L218">Source</a>
+    <a id="var-source" href="https://github.com/clojure/math.combinatorics/blob/5ade6ceb370e8290b1c6978da800aca892cd68a3/src/main/clojure/clojure/math/combinatorics.clj#L218">Source</a>
   </div><div id="var-entry">
     <br />
     <hr />
@@ -149,9 +154,10 @@ for a longer description.)</pre>
     <pre id="var-usage">Usage: (combinations items t)
 </pre>
     <pre id="var-docstr">All the unique ways of taking t different elements from items</pre>
+    <pre id="var-specs"></pre>
     
     
-    <a id="var-source" href="https://github.com/clojure/math.combinatorics/blob/ab136a0cdf5a92daec0856ae557c81982b4613ee/src/main/clojure/clojure/math/combinatorics.clj#L187">Source</a>
+    <a id="var-source" href="https://github.com/clojure/math.combinatorics/blob/5ade6ceb370e8290b1c6978da800aca892cd68a3/src/main/clojure/clojure/math/combinatorics.clj#L187">Source</a>
   </div><div id="var-entry">
     <br />
     <hr />
@@ -160,9 +166,10 @@ for a longer description.)</pre>
     <pre id="var-usage">Usage: (count-combinations items t)
 </pre>
     <pre id="var-docstr">(count (combinations items t)) but computed more directly</pre>
+    <pre id="var-specs"></pre>
     
     
-    <a id="var-source" href="https://github.com/clojure/math.combinatorics/blob/ab136a0cdf5a92daec0856ae557c81982b4613ee/src/main/clojure/clojure/math/combinatorics.clj#L509">Source</a>
+    <a id="var-source" href="https://github.com/clojure/math.combinatorics/blob/5ade6ceb370e8290b1c6978da800aca892cd68a3/src/main/clojure/clojure/math/combinatorics.clj#L509">Source</a>
   </div><div id="var-entry">
     <br />
     <hr />
@@ -171,9 +178,10 @@ for a longer description.)</pre>
     <pre id="var-usage">Usage: (count-permutations l)
 </pre>
     <pre id="var-docstr">Counts the number of distinct permutations of l</pre>
+    <pre id="var-specs"></pre>
     
     
-    <a id="var-source" href="https://github.com/clojure/math.combinatorics/blob/ab136a0cdf5a92daec0856ae557c81982b4613ee/src/main/clojure/clojure/math/combinatorics.clj#L357">Source</a>
+    <a id="var-source" href="https://github.com/clojure/math.combinatorics/blob/5ade6ceb370e8290b1c6978da800aca892cd68a3/src/main/clojure/clojure/math/combinatorics.clj#L357">Source</a>
   </div><div id="var-entry">
     <br />
     <hr />
@@ -182,9 +190,10 @@ for a longer description.)</pre>
     <pre id="var-usage">Usage: (count-subsets items)
 </pre>
     <pre id="var-docstr">(count (subsets items)) but computed more directly</pre>
+    <pre id="var-specs"></pre>
     
     
-    <a id="var-source" href="https://github.com/clojure/math.combinatorics/blob/ab136a0cdf5a92daec0856ae557c81982b4613ee/src/main/clojure/clojure/math/combinatorics.clj#L531">Source</a>
+    <a id="var-source" href="https://github.com/clojure/math.combinatorics/blob/5ade6ceb370e8290b1c6978da800aca892cd68a3/src/main/clojure/clojure/math/combinatorics.clj#L531">Source</a>
   </div><div id="var-entry">
     <br />
     <hr />
@@ -193,9 +202,10 @@ for a longer description.)</pre>
     <pre id="var-usage">Usage: (drop-permutations items n)
 </pre>
     <pre id="var-docstr">(drop n (permutations items)) but calculated more directly.</pre>
+    <pre id="var-specs"></pre>
     
     
-    <a id="var-source" href="https://github.com/clojure/math.combinatorics/blob/ab136a0cdf5a92daec0856ae557c81982b4613ee/src/main/clojure/clojure/math/combinatorics.clj#L450">Source</a>
+    <a id="var-source" href="https://github.com/clojure/math.combinatorics/blob/5ade6ceb370e8290b1c6978da800aca892cd68a3/src/main/clojure/clojure/math/combinatorics.clj#L450">Source</a>
   </div><div id="var-entry">
     <br />
     <hr />
@@ -204,9 +214,10 @@ for a longer description.)</pre>
     <pre id="var-usage">Usage: (nth-combination items t n)
 </pre>
     <pre id="var-docstr">The nth element of the sequence of t-combinations of items</pre>
+    <pre id="var-specs"></pre>
     
     
-    <a id="var-source" href="https://github.com/clojure/math.combinatorics/blob/ab136a0cdf5a92daec0856ae557c81982b4613ee/src/main/clojure/clojure/math/combinatorics.clj#L569">Source</a>
+    <a id="var-source" href="https://github.com/clojure/math.combinatorics/blob/5ade6ceb370e8290b1c6978da800aca892cd68a3/src/main/clojure/clojure/math/combinatorics.clj#L569">Source</a>
   </div><div id="var-entry">
     <br />
     <hr />
@@ -215,9 +226,10 @@ for a longer description.)</pre>
     <pre id="var-usage">Usage: (nth-permutation items n)
 </pre>
     <pre id="var-docstr">(nth (permutations items)) but calculated more directly.</pre>
+    <pre id="var-specs"></pre>
     
     
-    <a id="var-source" href="https://github.com/clojure/math.combinatorics/blob/ab136a0cdf5a92daec0856ae557c81982b4613ee/src/main/clojure/clojure/math/combinatorics.clj#L432">Source</a>
+    <a id="var-source" href="https://github.com/clojure/math.combinatorics/blob/5ade6ceb370e8290b1c6978da800aca892cd68a3/src/main/clojure/clojure/math/combinatorics.clj#L432">Source</a>
   </div><div id="var-entry">
     <br />
     <hr />
@@ -227,9 +239,10 @@ for a longer description.)</pre>
 </pre>
     <pre id="var-docstr">All the lexicographic distinct partitions of items.
 Optionally pass in :min and/or :max to specify inclusive bounds on the number of parts the items can be split into.</pre>
+    <pre id="var-specs"></pre>
     
     
-    <a id="var-source" href="https://github.com/clojure/math.combinatorics/blob/ab136a0cdf5a92daec0856ae557c81982b4613ee/src/main/clojure/clojure/math/combinatorics.clj#L916">Source</a>
+    <a id="var-source" href="https://github.com/clojure/math.combinatorics/blob/5ade6ceb370e8290b1c6978da800aca892cd68a3/src/main/clojure/clojure/math/combinatorics.clj#L916">Source</a>
   </div><div id="var-entry">
     <br />
     <hr />
@@ -239,9 +252,10 @@ Optionally pass in :min and/or :max to specify inclusive bounds on the number of
 </pre>
     <pre id="var-docstr">Input must be a sortable collection of items.  Returns the n such that
 (nth-permutation (sort items) n) is items.</pre>
+    <pre id="var-specs"></pre>
     
     
-    <a id="var-source" href="https://github.com/clojure/math.combinatorics/blob/ab136a0cdf5a92daec0856ae557c81982b4613ee/src/main/clojure/clojure/math/combinatorics.clj#L628">Source</a>
+    <a id="var-source" href="https://github.com/clojure/math.combinatorics/blob/5ade6ceb370e8290b1c6978da800aca892cd68a3/src/main/clojure/clojure/math/combinatorics.clj#L628">Source</a>
   </div><div id="var-entry">
     <br />
     <hr />
@@ -251,9 +265,10 @@ Optionally pass in :min and/or :max to specify inclusive bounds on the number of
 </pre>
     <pre id="var-docstr">All the distinct permutations of items, lexicographic by index 
 (special handling for duplicate items).</pre>
+    <pre id="var-specs"></pre>
     
     
-    <a id="var-source" href="https://github.com/clojure/math.combinatorics/blob/ab136a0cdf5a92daec0856ae557c81982b4613ee/src/main/clojure/clojure/math/combinatorics.clj#L290">Source</a>
+    <a id="var-source" href="https://github.com/clojure/math.combinatorics/blob/5ade6ceb370e8290b1c6978da800aca892cd68a3/src/main/clojure/clojure/math/combinatorics.clj#L290">Source</a>
   </div><div id="var-entry">
     <br />
     <hr />
@@ -262,9 +277,10 @@ Optionally pass in :min and/or :max to specify inclusive bounds on the number of
     <pre id="var-usage">Usage: (selections items n)
 </pre>
     <pre id="var-docstr">All the ways of taking n (possibly the same) elements from the sequence of items</pre>
+    <pre id="var-specs"></pre>
     
     
-    <a id="var-source" href="https://github.com/clojure/math.combinatorics/blob/ab136a0cdf5a92daec0856ae557c81982b4613ee/src/main/clojure/clojure/math/combinatorics.clj#L238">Source</a>
+    <a id="var-source" href="https://github.com/clojure/math.combinatorics/blob/5ade6ceb370e8290b1c6978da800aca892cd68a3/src/main/clojure/clojure/math/combinatorics.clj#L238">Source</a>
   </div><div id="var-entry">
     <br />
     <hr />
@@ -273,9 +289,10 @@ Optionally pass in :min and/or :max to specify inclusive bounds on the number of
     <pre id="var-usage">Usage: (subsets items)
 </pre>
     <pre id="var-docstr">All the subsets of items</pre>
+    <pre id="var-specs"></pre>
     
     
-    <a id="var-source" href="https://github.com/clojure/math.combinatorics/blob/ab136a0cdf5a92daec0856ae557c81982b4613ee/src/main/clojure/clojure/math/combinatorics.clj#L212">Source</a>
+    <a id="var-source" href="https://github.com/clojure/math.combinatorics/blob/5ade6ceb370e8290b1c6978da800aca892cd68a3/src/main/clojure/clojure/math/combinatorics.clj#L212">Source</a>
   </div>
 </div>
 
