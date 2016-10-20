@@ -8,7 +8,9 @@
   #^{:author "Mark Engelberg",
      :doc "Efficient, functional algorithms for generating lazy
 sequences for common combinatorial functions. (See the source code 
-for a longer description.)"}
+for a longer description.)"
+     :lang :core.typed
+     :core.typed {:features #{:runtime-infer}}}
   clojure.math.combinatorics
   (:refer-clojure :exclude [update]))
 
