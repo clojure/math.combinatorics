@@ -197,6 +197,19 @@ to write our own version that considers the empty-list to be distinct"
                                         (map #(map v-items %) (index-combinations t cnt))),
               :else (multi-comb items t))))))
 
+(defn combinations-with-repeats
+  "All ways of taking t different elements from items with repeats "
+  [items t]
+  (let [v-items (vec (reverse items))]
+    (if (zero? t) (list ())
+                  (let [cnt (count items)]
+                    (cond (> t cnt) nil
+                          (= t 1) (for [item (distinct items)] (list item))
+                          :else (if (= t cnt)
+                                  (list (seq items))
+                                  (map #(map v-items %) (index-combinations t cnt)))
+                          )))))
+
 (defn- unchunk
   "Given a sequence that may have chunks, return a sequence that is 1-at-a-time
 lazy with no chunks. Chunks are good for efficiency when the data items are
