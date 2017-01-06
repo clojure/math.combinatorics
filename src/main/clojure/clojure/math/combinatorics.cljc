@@ -42,8 +42,7 @@ faster than a nested for loop, such as:
 take n (possibly the same) items from the sequence of items.
 Example: (selections [1 2] 3) -> ((1 1 1) (1 1 2) (1 2 1) (1 2 2) (2 1 1) (2 1 2) (2 2 1) (2 2 2))
 
-(permutations items) - A lazy sequence of all the permutations
-of items.
+(permutations items) - A lazy sequence of all the permutations of items.
 Example: (permutations [1 2 3]) -> ((1 2 3) (1 3 2) (2 1 3) (2 3 1) (3 1 2) (3 2 1))
 Example: (permutations [1 1 2]) -> ((1 1 2) (1 2 1) (2 1 1))
 
@@ -52,8 +51,7 @@ Example: (permutations [1 1 2]) -> ((1 1 2) (1 2 1) (2 1 1))
 (drop-permutations items n) - (drop n (permutations items)), but computed more directly
 (permutation-index items) - Returns the number n where (nth-permutation (sort items) n) is items
 
-(partitions items) - A lazy sequence of all the partitions
-of items.
+(partitions items) - A lazy sequence of all the partitions of items.
 Example: (partitions [1 2 3]) -> (([1 2 3])
                                   ([1 2] [3])
                                   ([1 3] [2])
@@ -79,6 +77,9 @@ I also restricted myself to algorithms that return results in a standard order. 
 Most of these algorithms are derived from algorithms found in Knuth's wonderful Art of Computer Programming books (specifically, the volume 4 fascicles), which present fast, iterative solutions to these common combinatorial problems.  Unfortunately, these iterative versions are somewhat inscrutable.  If you want to better understand these algorithms, the Knuth books are the place to start.
 "
 )
+
+#?(:cljs (def *' *)) ; because Clojurescript doesn't have *'
+#?(:cljs (def +' +)) ; because Clojurescript doesn't have +'
 
 (defn- all-different?
   "Annoyingly, the built-in distinct? doesn't handle 0 args, so we need
@@ -297,8 +298,7 @@ In prior versions of the combinatorics library, there were two similar functions
 
 (defn- factorial [n]
   {:pre [(integer? n) (not (neg? n))]}
-  ; (Long/valueOf (long 1)) eliminates loop auto-boxing warning, in a way compatible with Clojure 1.2
-  (loop [acc (Long/valueOf (long 1)), n n] 
+  (loop [acc #?(:clj (Long/valueOf 1) :cljs 1), n n]
     (if (zero? n) acc (recur (*' acc n) (dec n)))))
 
 (defn- factorial-numbers
@@ -353,7 +353,7 @@ output is nth-permutation (0-based)"
   "Takes a sorted frequency map and returns how far into the sequence of
 lexicographic permutations you get by varying the first item"
   [freqs]
-  (reductions + 0
+  (reductions +' 0
               (for [[k v] freqs]
                 (count-permutations-from-frequencies (assoc freqs k (dec v))))))
 
@@ -500,7 +500,7 @@ so that we can memoize over a series of calls."
     (count-combinations-unmemoized items t)))
 
 (defn- expt-int [base pow]
-  (loop [n pow, y (Long/valueOf (long 1)), z base]
+  (loop [n pow, y #?(:clj (Long/valueOf 1) :cljs 1), z base]
     (let [t (even? n), n (quot n 2)]
       (cond
        t (recur n y (*' z z))
@@ -595,18 +595,18 @@ represented by freqs"
 
 (defn- permutation-index-distinct
   [l]
-  (loop [l l, index (Long/valueOf (long 0)), n (dec (count l))]
+  (loop [l l, index #?(:clj (Long/valueOf 0) :cljs 0), n (dec (count l))]
     (if (empty? l) index
       (recur (rest l) 
-             (+ index (* (factorial n) (list-index (sort l) (first l))))
+             (+' index (*' (factorial n) (list-index (sort l) (first l))))
              (dec n)))))
 
 (defn- permutation-index-duplicates
   [l]
-  (loop [l l, index (Long/valueOf (long 0)), freqs (into (sorted-map) (frequencies l))]
+  (loop [l l, index #?(:clj (Long/valueOf 0) :cljs 0), freqs (into (sorted-map) (frequencies l))]
     (if (empty? l) index
       (recur (rest l)
-             (reduce + index 
+             (reduce +' index
                      (for [k (take-while #(neg? (compare % (first l))) (keys freqs))]
                        (count-permutations-from-frequencies (dec-key freqs k))))
              (dec-key freqs (first l))))))
@@ -641,9 +641,13 @@ represented by freqs"
   (let [item (vec index)]
     (assoc vec index (f item))))
 
+#?(:clj
 (defmacro ^:private reify-bool
   [statement]
   `(if ~statement 1 0))
+   :cljs
+    (defn- reify-bool [statement]
+      (if statement 1 0)))
 
 (defn- init
   [n s]
