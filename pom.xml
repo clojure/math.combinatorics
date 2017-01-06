@@ -16,6 +16,81 @@
     </developer>
   </developers>
 
+  <dependencies>
+    <dependency>
+      <groupId>org.clojure</groupId>
+      <artifactId>clojurescript</artifactId>
+      <version>1.9.293</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <testResources>
+      <testResource>
+        <directory>${project.basedir}/src/test/resources</directory>
+      </testResource>
+      <testResource>
+        <directory>${project.basedir}/src/test/clojurescript</directory>
+      </testResource>
+    </testResources>
+    <plugins>
+      <plugin>
+        <!-- cljc-maven-plugin produces .clj files from .cljc files,
+             hence enabling usage of .cljc while supporting clojure < 1.7.0 -->
+        <groupId>net.bendlas</groupId>
+        <artifactId>cljc-maven-plugin</artifactId>
+        <version>0.1.2</version>
+        <executions>
+          <execution>
+            <id>split-compile</id>
+            <phase>generate-sources</phase>
+            <goals><goal>split</goal></goals>
+          </execution>
+          <execution>
+            <id>split-compile-tests</id>
+            <phase>generate-test-sources</phase>
+            <goals><goal>split-tests</goal></goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>2.4</version>
+        <executions>
+          <execution>
+            <id>default-jar</id>
+            <phase>package</phase>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+            <configuration>
+              <includes>
+                <include>**/*.clj</include>
+                <include>**/*.cljs</include>
+                <include>**/*.cljc</include>
+              </includes>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+  <properties>
+    <!-- set clojure.version to >= 1.8.0 to run cljs test suite
+         (and make sure to run on jdk >= 1.8 for nashorn support) -->
+    <clojure.version>1.8.0</clojure.version>
+  </properties>
+
+  <pluginRepositories>
+    <!-- use clojars for cljc-maven-plugin -->
+    <pluginRepository>
+      <id>clojars.org</id>
+      <url>https://clojars.org/repo</url>
+    </pluginRepository>
+  </pluginRepositories>
+
   <scm>
     <connection>scm:git:git@github.com:clojure/math.combinatorics.git</connection>
     <developerConnection>scm:git:git@github.com:clojure/math.combinatorics.git</developerConnection>
