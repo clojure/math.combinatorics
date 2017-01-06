@@ -22,4 +22,8 @@
     <url>git@github.com:clojure/math.combinatorics.git</url>
     <tag>HEAD</tag>
   </scm>
+
+  <properties>
+    <clojure.version>1.7.0</clojure.version>
+  </properties>
 </project>
