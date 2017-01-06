@@ -160,7 +160,8 @@ Developer Information
 Changelog
 ========================================
 * Release 0.1.4 om 2017-01-06
-  * Support for clojurescript
+  * Support for clojurescript (tested with 1.9.293)
+  * Dropped support for Clojure 1.2 and 1.3 (now requires 1.4 or higher)
 
 * Release 0.1.3 on 2016-06-02
   * Changed boxing to use Long/valueOf.

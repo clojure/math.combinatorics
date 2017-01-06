@@ -4,7 +4,7 @@
               partitions nth-permutation permutation-index drop-permutations 
               count-permutations count-combinations count-subsets 
               nth-subset nth-combination]]
-          [clojure.test :refer [deftest is are testing run-tests]]))
+            [clojure.test :refer [deftest is are testing run-tests]]))
 
 (deftest test-combinations
   (are [x y] (= x y)

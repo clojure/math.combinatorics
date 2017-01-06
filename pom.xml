@@ -28,9 +28,6 @@
   <build>
     <testResources>
       <testResource>
-        <directory>${project.basedir}/src/test/resources</directory>
-      </testResource>
-      <testResource>
         <directory>${project.basedir}/src/test/clojurescript</directory>
       </testResource>
     </testResources>
@@ -78,8 +75,6 @@
   </build>
 
   <properties>
-    <!-- set clojure.version to >= 1.8.0 to run cljs test suite
-         (and make sure to run on jdk >= 1.8 for nashorn support) -->
     <clojure.version>1.8.0</clojure.version>
   </properties>
 
