@@ -1,6 +1,10 @@
 (ns clojure.math.test-combinatorics
-  (:use clojure.test
-        clojure.math.combinatorics))
+  (:require [clojure.math.combinatorics :refer 
+             [subsets combinations selections permutations cartesian-product
+              partitions nth-permutation permutation-index drop-permutations 
+              count-permutations count-combinations count-subsets 
+              nth-subset nth-combination]]
+            [clojure.test :refer [deftest is are testing run-tests]]))
 
 (deftest test-combinations
   (are [x y] (= x y)

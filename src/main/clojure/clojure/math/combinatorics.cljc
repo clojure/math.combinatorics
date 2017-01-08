@@ -2,7 +2,7 @@
 ;;; sequences for common combinatorial functions.
 
 ;; by Mark Engelberg (mark.engelberg@gmail.com)
-;; Last updated - May 18, 2016
+;; Last updated - Jan 7, 2017
 
 (ns
   #^{:author "Mark Engelberg",
@@ -42,8 +42,7 @@ faster than a nested for loop, such as:
 take n (possibly the same) items from the sequence of items.
 Example: (selections [1 2] 3) -> ((1 1 1) (1 1 2) (1 2 1) (1 2 2) (2 1 1) (2 1 2) (2 2 1) (2 2 2))
 
-(permutations items) - A lazy sequence of all the permutations
-of items.
+(permutations items) - A lazy sequence of all the permutations of items.
 Example: (permutations [1 2 3]) -> ((1 2 3) (1 3 2) (2 1 3) (2 3 1) (3 1 2) (3 2 1))
 Example: (permutations [1 1 2]) -> ((1 1 2) (1 2 1) (2 1 1))
 
@@ -52,8 +51,7 @@ Example: (permutations [1 1 2]) -> ((1 1 2) (1 2 1) (2 1 1))
 (drop-permutations items n) - (drop n (permutations items)), but computed more directly
 (permutation-index items) - Returns the number n where (nth-permutation (sort items) n) is items
 
-(partitions items) - A lazy sequence of all the partitions
-of items.
+(partitions items) - A lazy sequence of all the partitions of items.
 Example: (partitions [1 2 3]) -> (([1 2 3])
                                   ([1 2] [3])
                                   ([1 3] [2])
@@ -80,6 +78,9 @@ Most of these algorithms are derived from algorithms found in Knuth's wonderful 
 "
 )
 
+#?(:cljs (def *' *)) ; because Clojurescript doesn't have *'
+#?(:cljs (def +' +)) ; because Clojurescript doesn't have +'
+
 (defn- all-different?
   "Annoyingly, the built-in distinct? doesn't handle 0 args, so we need
 to write our own version that considers the empty-list to be distinct"
@@ -87,17 +88,6 @@ to write our own version that considers the empty-list to be distinct"
   (if (seq s)
     (apply distinct? s)
     true))
-
-(defmacro assert-with-message
-  "Clojure 1.2 didn't allow asserts with a message, so we roll our own here for backwards compatibility"
-  [x message]
-  (when *assert*
-    `(when-not ~x
-       (throw (new AssertionError (str "Assert failed: " ~message "\n" (pr-str '~x)))))))
-
-;; so this code works with both 1.2.x and 1.3.0:
-(def ^{:private true} plus (first [+' +]))
-(def ^{:private true} mult (first [*' *]))
 
 (defn- index-combinations
   [n cnt]
@@ -308,9 +298,8 @@ In prior versions of the combinatorics library, there were two similar functions
 
 (defn- factorial [n]
   {:pre [(integer? n) (not (neg? n))]}
-  ; (Long/valueOf (long 1)) eliminates loop auto-boxing warning, in a way compatible with Clojure 1.2
-  (loop [acc (Long/valueOf (long 1)), n n] 
-    (if (zero? n) acc (recur (mult acc n) (dec n)))))
+  (loop [acc #?(:clj (Long/valueOf 1) :cljs 1), n n]
+    (if (zero? n) acc (recur (*' acc n) (dec n)))))
 
 (defn- factorial-numbers
   "Input is a non-negative base 10 integer, output is the number in the
@@ -333,9 +322,8 @@ expressed as a list of 'digits'"
   "Input should be a sorted sequential collection l of distinct items, 
 output is nth-permutation (0-based)"
   [l n]
-  (assert-with-message (< n (factorial (count l))) 
-                       (format "%s is too large. Input has only %s permutations."
-                               (str n) (str (factorial (count l)))))
+  (assert (< n (factorial (count l)))
+          (print-str n "is too large. Input has only" (factorial (count l)) "permutations."))
   (let [length (count l)
         fact-nums (factorial-numbers n)]
     (loop [indices (concat (repeat (- length (count fact-nums)) 0)
@@ -365,7 +353,7 @@ output is nth-permutation (0-based)"
   "Takes a sorted frequency map and returns how far into the sequence of
 lexicographic permutations you get by varying the first item"
   [freqs]
-  (reductions + 0
+  (reductions +' 0
               (for [[k v] freqs]
                 (count-permutations-from-frequencies (assoc freqs k (dec v))))))
 
@@ -414,9 +402,8 @@ Output is a list of 'digits' in this wacky duplicate factorial number system"
   "Input should be a sorted sequential collection l of distinct items, 
 output is nth-permutation (0-based)"
   [l n]
-  (assert-with-message (< n (count-permutations l)) 
-                       (format "%s is too large. Input has only %s permutations."
-                               (str n) (str (count-permutations l))))
+  (assert (< n (count-permutations l))
+          (print-str n "is too large. Input has only" (count-permutations l) "permutations."))
   (loop [freqs (into (sorted-map) (frequencies l)),
          indices (factorial-numbers-with-duplicates n freqs)
          perm []]
@@ -480,8 +467,8 @@ output is nth-permutation (0-based)"
     (zero? k) 1
     (= k 1) n
     (> k (quot n 2)) (recur n (- n k))
-    :else (/ (apply mult (range (inc (- n k)) (inc n)))
-             (apply mult (range 1 (inc k))))))
+    :else (/ (apply *' (range (inc (- n k)) (inc n)))
+             (apply *' (range 1 (inc k))))))
 
 (defn- ^{:dynamic true} count-combinations-from-frequencies [freqs t]
   (let [counts (vals freqs)
@@ -495,7 +482,7 @@ output is nth-permutation (0-based)"
       (= (count freqs) 1) 1
       :else
       (let [new-freqs (dec-key freqs (first (keys freqs)))]
-        (plus (count-combinations-from-frequencies new-freqs (dec t))
+        (+' (count-combinations-from-frequencies new-freqs (dec t))
               (count-combinations-from-frequencies (dissoc freqs (first (keys freqs))) t))))))
 
 (defn- count-combinations-unmemoized
@@ -513,19 +500,19 @@ so that we can memoize over a series of calls."
     (count-combinations-unmemoized items t)))
 
 (defn- expt-int [base pow]
-  (loop [n pow, y (Long/valueOf (long 1)), z base]
+  (loop [n pow, y #?(:clj (Long/valueOf 1) :cljs 1), z base]
     (let [t (even? n), n (quot n 2)]
       (cond
-       t (recur n y (mult z z))
-       (zero? n) (mult z y)
-       :else (recur n (mult z y) (mult z z))))))
+       t (recur n y (*' z z))
+       (zero? n) (*' z y)
+       :else (recur n (*' z y) (*' z z))))))
 
 (defn- count-subsets-unmemoized
   [items]
   (cond 
     (empty? items) 1
     (all-different? items) (expt-int 2 (count items))
-    :else (apply plus (for [i (range 0 (inc (count items)))]
+    :else (apply +' (for [i (range 0 (inc (count items)))]
                         (count-combinations-unmemoized items i)))))
 
 (defn count-subsets
@@ -569,9 +556,9 @@ represented by freqs"
 (defn nth-combination
   "The nth element of the sequence of t-combinations of items"
   [items t n]
-  (assert-with-message (< n (count-combinations items t))
-                       (format "%s is too large. Input has only %s combinations."
-                               (str n) (str (count-combinations-unmemoized items t))))
+  (assert (< n (count-combinations items t))
+          (print-str n "is too large. Input has only" 
+                     (count-combinations-unmemoized items t) "combinations."))
   (if (all-different? items)
     (nth-combination-distinct items t n)
     (binding [count-combinations-from-frequencies (memoize count-combinations-from-frequencies)]
@@ -585,9 +572,8 @@ represented by freqs"
 
 (defn nth-subset
   [items n]
-  (assert-with-message (< n (count-subsets items))
-                       (format "%s is too large. Input has only %s subsets."
-                               (str n) (str (count-subsets items))))
+  (assert (< n (count-subsets items))
+          (print-str n "is too large. Input has only" (count-subsets items) "subsets."))
   (loop [size 0,
          n n]
     (let [num-combinations (count-combinations items size)]
@@ -609,18 +595,18 @@ represented by freqs"
 
 (defn- permutation-index-distinct
   [l]
-  (loop [l l, index (Long/valueOf (long 0)), n (dec (count l))]
+  (loop [l l, index #?(:clj (Long/valueOf 0) :cljs 0), n (dec (count l))]
     (if (empty? l) index
       (recur (rest l) 
-             (+ index (* (factorial n) (list-index (sort l) (first l))))
+             (+' index (*' (factorial n) (list-index (sort l) (first l))))
              (dec n)))))
 
 (defn- permutation-index-duplicates
   [l]
-  (loop [l l, index (Long/valueOf (long 0)), freqs (into (sorted-map) (frequencies l))]
+  (loop [l l, index #?(:clj (Long/valueOf 0) :cljs 0), freqs (into (sorted-map) (frequencies l))]
     (if (empty? l) index
       (recur (rest l)
-             (reduce + index 
+             (reduce +' index
                      (for [k (take-while #(neg? (compare % (first l))) (keys freqs))]
                        (count-permutations-from-frequencies (dec-key freqs k))))
              (dec-key freqs (first l))))))
@@ -655,9 +641,13 @@ represented by freqs"
   (let [item (vec index)]
     (assoc vec index (f item))))
 
+#?(:clj
 (defmacro ^:private reify-bool
   [statement]
   `(if ~statement 1 0))
+   :cljs
+    (defn- reify-bool [statement]
+      (if statement 1 0)))
 
 (defn- init
   [n s]
