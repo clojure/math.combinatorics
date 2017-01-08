@@ -27,9 +27,11 @@ Latest stable release: 0.1.4
 <dependency>
   <groupId>org.clojure</groupId>
   <artifactId>math.combinatorics</artifactId>
-  <version>0.1.2</version>
+  <version>0.1.4</version>
 </dependency>
 ```
+
+*Note: If you are using Clojure 1.2 - 1.6, you will need math.combinatorics version 0.1.3.*
 
 Example Usage
 ========================================
@@ -161,7 +163,7 @@ Changelog
 ========================================
 * Release 0.1.4 om 2017-01-06
   * Support for clojurescript (tested with 1.9.293)
-  * Dropped support for Clojure 1.2 and 1.3 (now requires 1.4 or higher)
+  * Dropped support for Clojure 1.2 - 1.6
 
 * Release 0.1.3 on 2016-06-02
   * Changed boxing to use Long/valueOf.
