@@ -36,6 +36,11 @@ Latest stable release: 0.1.4
 Example Usage
 ========================================
 
+The following functions take sequential collections
+(such as lists and vectors) as inputs. If you want
+to call a function on a set, you must explicitly
+call `seq` on the set first.
+
 All functions return lazy sequences.
 
 ```clojure
