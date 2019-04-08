@@ -9,7 +9,7 @@ sequences for common combinatorial functions.
 Releases and Dependency Information
 ========================================
 
-Latest stable release: 0.1.4
+Latest stable release: 0.1.5
 
 * [All Released Versions](http://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22org.clojure%22%20AND%20a%3A%22math.combinatorics%22)
 
@@ -18,7 +18,7 @@ Latest stable release: 0.1.4
 [Leiningen](https://github.com/technomancy/leiningen) dependency information:
 
 ```clojure
-[org.clojure/math.combinatorics "0.1.4"]
+[org.clojure/math.combinatorics "0.1.5"]
 ```
 
 [Maven](http://maven.apache.org/) dependency information:
@@ -27,7 +27,7 @@ Latest stable release: 0.1.4
 <dependency>
   <groupId>org.clojure</groupId>
   <artifactId>math.combinatorics</artifactId>
-  <version>0.1.4</version>
+  <version>0.1.5</version>
 </dependency>
 ```
 
@@ -166,7 +166,10 @@ Developer Information
 
 Changelog
 ========================================
-* Release 0.1.4 om 2017-01-06
+* Release 0.1.5 on 2019-04-07
+  * Removed deprecated annotation on lex-permutations, which was causing problems for clojurescript users.
+  
+* Release 0.1.4 on 2017-01-06
   * Support for clojurescript (tested with 1.9.293)
   * Dropped support for Clojure 1.2 - 1.6
 
