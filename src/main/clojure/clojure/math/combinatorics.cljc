@@ -2,7 +2,7 @@
 ;;; sequences for common combinatorial functions.
 
 ;; by Mark Engelberg (mark.engelberg@gmail.com)
-;; Last updated - Jan 7, 2017
+;; Last updated - Apr 7, 2019
 
 (ns
   #^{:author "Mark Engelberg",
@@ -253,7 +253,6 @@ collected."
   "DEPRECATED as a public function.
 
 In prior versions of the combinatorics library, there were two similar functions: permutations and lex-permutations.  It was a source of confusion to know which to call.  Now, you can always call permutations.  When appropriate (i.e., when you pass in a sorted sequence of numbers), permutations will automatically call lex-permutations as a speed optimization."
-  {:deprecated "1.3"}
   [c]
   (lazy-seq
     (let [vec-sorted (vec (sort c))]
