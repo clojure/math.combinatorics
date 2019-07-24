@@ -95,8 +95,10 @@ All functions return lazy sequences.
 [2 4]
 
 ; Permuting all the combinations
-=> (combo/permuted-combinations [1 2 3] 2) -> ([1 2] [2 1] [1 3] [3 1] [2 3] [3 2])
-=> (combo/permuted-combinations [1 2 2] 2) -> ([1 2] [2 1] [2 2])))
+=> (combo/permuted-combinations [1 2 3] 2)
+([1 2] [2 1] [1 3] [3 1] [2 3] [3 2])
+=> (combo/permuted-combinations [1 2 2] 2)
+([1 2] [2 1] [2 2])))
 
 
 ; SUBSETS
