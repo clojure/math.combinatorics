@@ -2,7 +2,7 @@
 ;;; sequences for common combinatorial functions.
 
 ;; by Mark Engelberg (mark.engelberg@gmail.com)
-;; Last updated - Apr 7, 2019
+;; Last updated - July 24, 2019
 
 (ns
   #^{:author "Mark Engelberg",
@@ -51,6 +51,9 @@ Example: (permutations [1 1 2]) -> ((1 1 2) (1 2 1) (2 1 1))
 (drop-permutations items n) - (drop n (permutations items)), but computed more directly
 (permutation-index items) - Returns the number n where (nth-permutation (sort items) n) is items
 
+(permuted-combinations items t) - A lazy sequence of all the permutations of all the combinations of t elements drawn from items
+Example: (permuted-combinations [1 2 3] 2) -> ([1 2] [2 1] [1 3] [3 1] [2 3] [3 2])
+
 (partitions items) - A lazy sequence of all the partitions of items.
 Example: (partitions [1 2 3]) -> (([1 2 3])
                                   ([1 2] [3])
@@ -81,9 +84,22 @@ Most of these algorithms are derived from algorithms found in Knuth's wonderful 
 #?(:cljs (def *' *)) ; because Clojurescript doesn't have *'
 #?(:cljs (def +' +)) ; because Clojurescript doesn't have +'
 
+(defn- join
+  "Lazily concatenates a collection of collections into a flat sequence,
+  because Clojure's `apply concat` is insufficiently lazy."
+  [colls]
+  (lazy-seq
+   (when-let [s (seq colls)]
+     (concat (first s) (join (rest s))))))
+
+(defn- mapjoin
+  "Uses join to achieve lazier version of mapcat (on one collection)"
+  [f coll]
+  (join (map f coll)))
+
 (defn- all-different?
   "Annoyingly, the built-in distinct? doesn't handle 0 args, so we need
-to write our own version that considers the empty-list to be distinct"
+  to write our own version that considers the empty-list to be distinct"
   [s]
   (if (seq s)
     (apply distinct? s)
@@ -170,9 +186,9 @@ to write our own version that considers the empty-list to be distinct"
         m (vec (for [i domain] (f (v i))))
         qs (bounded-distributions m t)]
     (for [q qs]
-      (apply concat
-             (for [[index this-bucket _] q]
-               (repeat this-bucket (v index)))))))
+      (join
+       (for [[index this-bucket _] q]
+         (repeat this-bucket (v index)))))))
                 
 (defn combinations
   "All the unique ways of taking t different elements from items"
@@ -202,8 +218,8 @@ collected."
 (defn subsets
   "All the subsets of items"
   [items]
-  (mapcat (fn [n] (combinations items n))
-          (unchunk (range (inc (count items))))))
+  (mapjoin (fn [n] (combinations items n))
+           (unchunk (range (inc (count items))))))
 
 (defn cartesian-product
   "All the ways to take one item from each sequence"
@@ -271,14 +287,14 @@ In prior versions of the combinatorics library, there were two similar functions
   [l]
   (let [f (frequencies l),
         v (vec (distinct l)),
-        indices (apply concat
-                       (for [i (range (count v))]
-                         (repeat (f (v i)) i)))]
+        indices (join
+                 (for [i (range (count v))]
+                   (repeat (f (v i)) i)))]
     (map (partial map v) (lex-permutations indices))))
 
 (defn permutations
   "All the distinct permutations of items, lexicographic by index 
-(special handling for duplicate items)."
+  (special handling for duplicate items)."
   [items]
   (cond
     (sorted-numbers? items) (lex-permutations items),
@@ -289,6 +305,13 @@ In prior versions of the combinatorics library, there were two similar functions
     
     :else
     (multi-perm items)))
+
+(defn permuted-combinations
+  "Every permutation of every combination of t elements from items"
+  [items t]
+  (->> (combinations items t)
+       (map permutations)
+       join))
 
 ;; Jumping directly to a given permutation
 
@@ -428,9 +451,9 @@ output is nth-permutation (0-based)"
         (vec (map v perm-indices)))
       (let [v (vec (distinct items)),
             f (frequencies items),
-            indices (apply concat
-                           (for [i (range (count v))]
-                             (repeat (f (v i)) i)))]
+            indices (join
+                     (for [i (range (count v))]
+                       (repeat (f (v i)) i)))]
         (vec (map v (nth-permutation-duplicates indices n)))))))
 
 (defn drop-permutations
@@ -450,9 +473,9 @@ output is nth-permutation (0-based)"
           (map (partial map v) (vec-lex-permutations perm-indices)))
         (let [v (vec (distinct items)),
               f (frequencies items),
-              indices (apply concat
-                             (for [i (range (count v))]
-                               (repeat (f (v i)) i)))]
+              indices (join
+                       (for [i (range (count v))]
+                         (repeat (f (v i)) i)))]
           (map (partial map v) 
                (vec-lex-permutations
                  (nth-permutation-duplicates indices n))))))))
@@ -544,7 +567,7 @@ represented by freqs"
          t t, 
          n n]
     (if (or (zero? n) (empty? freqs)) 
-      (into comb (take t (apply concat (for [[k v] freqs] (repeat v k)))))
+      (into comb (take t (join (for [[k v] freqs] (repeat v k)))))
       (let [first-key (first (keys freqs)),
             remove-one-key (dec-key freqs first-key)
             dc-dt (count-combinations-from-frequencies remove-one-key (dec t))]
@@ -563,9 +586,9 @@ represented by freqs"
     (binding [count-combinations-from-frequencies (memoize count-combinations-from-frequencies)]
       (let [v (vec (distinct items))
             f (frequencies items),
-            indices (apply concat
-                           (for [i (range (count v))]
-                             (repeat (f (v i)) i)))
+            indices (join
+                     (for [i (range (count v))]
+                       (repeat (f (v i)) i)))
             indices-freqs (into (sorted-map) (frequencies indices))]
         (vec (map v (nth-combination-freqs indices-freqs t n)))))))
 
@@ -897,10 +920,11 @@ represented by freqs"
                                               [j (freqs (ditems i))]))
                     parts (multiset-partitions-M start-multiset to from)]
                 (->> multiset
-                  (mapcat (fn [[index numtimes]] (repeat numtimes (ditems (dec index)))))
-                  vec
-                  (for [multiset part])
-                  (for [part parts])))))))
+                     (mapjoin (fn [[index numtimes]]
+                                (repeat numtimes (ditems (dec index)))))
+                     vec
+                     (for [multiset part])
+                     (for [part parts])))))))
 
 (defn partitions
   "All the lexicographic distinct partitions of items.

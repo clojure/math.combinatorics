@@ -9,7 +9,7 @@ sequences for common combinatorial functions.
 Releases and Dependency Information
 ========================================
 
-Latest stable release: 0.1.5
+Latest stable release: 0.1.6
 
 * [All Released Versions](http://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22org.clojure%22%20AND%20a%3A%22math.combinatorics%22)
 
@@ -18,7 +18,7 @@ Latest stable release: 0.1.5
 [Leiningen](https://github.com/technomancy/leiningen) dependency information:
 
 ```clojure
-[org.clojure/math.combinatorics "0.1.5"]
+[org.clojure/math.combinatorics "0.1.6"]
 ```
 
 [Maven](http://maven.apache.org/) dependency information:
@@ -27,7 +27,7 @@ Latest stable release: 0.1.5
 <dependency>
   <groupId>org.clojure</groupId>
   <artifactId>math.combinatorics</artifactId>
-  <version>0.1.5</version>
+  <version>0.1.6</version>
 </dependency>
 ```
 
@@ -93,6 +93,11 @@ All functions return lazy sequences.
 3
 => (combo/nth-combination [1 2 3 4 5] 2 5)
 [2 4]
+
+; Permuting all the combinations
+=> (combo/permuted-combinations [1 2 3] 2) -> ([1 2] [2 1] [1 3] [3 1] [2 3] [3 2])
+=> (combo/permuted-combinations [1 2 2] 2) -> ([1 2] [2 1] [2 2])))
+
 
 ; SUBSETS
 ; all the subsets of items
@@ -166,9 +171,13 @@ Developer Information
 
 Changelog
 ========================================
+* Release 0.1.6 on 2019-07-24
+  * Improved laziness characteristics of many functions
+  * Added `permuted-combinations`
+
 * Release 0.1.5 on 2019-04-07
   * Removed deprecated annotation on lex-permutations, which was causing problems for clojurescript users.
-  
+
 * Release 0.1.4 on 2017-01-06
   * Support for clojurescript (tested with 1.9.293)
   * Dropped support for Clojure 1.2 - 1.6

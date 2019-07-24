@@ -1,14 +1,20 @@
 (ns clojure.math.test-combinatorics
   (:require [clojure.math.combinatorics :refer 
              [subsets combinations selections permutations cartesian-product
-              partitions nth-permutation permutation-index drop-permutations 
+              partitions nth-permutation permutation-index drop-permutations
+              permuted-combinations
               count-permutations count-combinations count-subsets 
               nth-subset nth-combination]]
             [clojure.test :refer [deftest is are testing run-tests]]))
 
+(deftest test-permuted-combinations
+  (are [x y] (= x y)
+    (permuted-combinations [1 2 3] 2) '([1 2] [2 1] [1 3] [3 1] [2 3] [3 2])
+    (permuted-combinations [1 2 2] 2) '([1 2] [2 1] [2 2])))
+
 (deftest test-combinations
   (are [x y] (= x y)
-       (combinations [1 2 3] 2) '((1 2) (1 3) (2 3))))
+    (combinations [1 2 3] 2) '((1 2) (1 3) (2 3))))
 
 (defn old-subsets [l]
   (map (partial map deref) (subsets (map atom l)))) 
