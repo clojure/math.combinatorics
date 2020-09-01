@@ -15,6 +15,11 @@ Latest stable release: 0.1.6
 
 * [Development Snapshot Versions](https://oss.sonatype.org/index.html#nexus-search;gav~org.clojure~math.combinatorics~~~)
 
+[CLI/`deps.edn`](https://clojure.org/reference/deps_and_cli) dependency information:
+```clojure
+org.clojure/math.combinatorics {:mvn/version "0.1.6"}
+```
+
 [Leiningen](https://github.com/technomancy/leiningen) dependency information:
 
 ```clojure
