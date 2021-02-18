@@ -169,12 +169,9 @@ Developer Information
 ========================================
 
 * [GitHub project](https://github.com/clojure/math.combinatorics)
-
-* [Bug Tracker](http://dev.clojure.org/jira/browse/MCOMB)
-
-* [Continuous Integration](http://build.clojure.org/job/math.combinatorics/)
-
-* [Compatibility Test Matrix](http://build.clojure.org/job/math.combinatorics-test-matrix/)
+* [Bug Tracker](https://clojure.atlassian.net/browse/MCOMB)
+* [Continuous Integration](https://build.clojure.org/job/math.combinatorics/)
+* [Compatibility Test Matrix](https://build.clojure.org/job/math.combinatorics-test-matrix/)
 
 Changelog
 ========================================
