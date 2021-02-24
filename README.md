@@ -163,7 +163,7 @@ All functions return lazy sequences.
 Refer to docstrings in the `clojure.math.combinatorics` namespace for
 additional documentation.
 
-[API Documentation](http://clojure.github.com/math.combinatorics/)
+[API Documentation](https://clojure.github.io/math.combinatorics/)
 
 Developer Information
 ========================================
