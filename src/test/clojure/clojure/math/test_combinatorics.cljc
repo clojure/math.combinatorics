@@ -197,7 +197,7 @@
             hi (range -1 (+ 2 num-items))]
       (is (= (partitions (range num-items) :min lo :max hi)
              (filter #(<= lo (count %) hi) (partitions (range num-items)))))) ; tests partitions-H
-    (doseq [num-items (range 2 4)
+    (doseq [num-items (range 2 7)
             lo (range -1 (+ 2 num-items))
             hi (range -1 (+ 2 num-items))]
       (is (= (partitions (cons 0 (range (dec num-items))) :min lo :max hi)

@@ -874,28 +874,13 @@ represented by freqs"
               (u j))) (m6 n m f c u v a b l r s)
       (and (= j a)
            (= (v j) 1)) (m6 n m f c u v a b l r s)
-      :else (let [v (update v j dec)
-                  diff-uv (if s (apply + (for [i (range a (inc j))]
-                                           (- (u i) (v i)))) nil)
-                  v (loop [ks (range (inc j) b)
-                           v v]
+      :else (let [v (loop [ks (range (inc j) b)
+                           v  (update v j dec)]
                       (if (empty? ks)
                         v
                         (let [k (first ks)]
                           (recur (rest ks)
-                                 (assoc v k (u k))))))
-                  min-partitions-after-this (if s (- s (inc l)) 0)
-                  amount-to-dec (if s (max 0 (- min-partitions-after-this diff-uv)) 0)
-                  v (if (= amount-to-dec 0)
-                      v
-                      (loop [k-1 (dec b), v v
-                             amount amount-to-dec]
-                        (let [vk (v k-1)]
-                          (if (> amount vk)
-                            (recur (dec k-1)
-                                   (assoc v k-1 0)
-                                   (- amount vk))
-                            (assoc v k-1 (- vk amount))))))]
+                                 (assoc v k (u k))))))]
               (multiset-partitions-M n m f c u v a b l r s)))))
 
 (defn- m6  ; M6
