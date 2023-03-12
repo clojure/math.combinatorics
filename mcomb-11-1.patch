@@ -1,0 +1,78 @@
+From 74cb8dd3df7ceff2e8959837751f79f4ef74e950 Mon Sep 17 00:00:00 2001
+From: Sam Ritchie <sritchie09@gmail.com>
+Date: Sun, 5 Mar 2023 10:38:51 -0700
+Subject: [PATCH] MCOMB-11 Fix incorrect results, overflow in partitions-M
+
+---
+ .../clojure/clojure/math/combinatorics.cljc   | 21 +++----------------
+ .../clojure/math/test_combinatorics.cljc      |  2 +-
+ 2 files changed, 4 insertions(+), 19 deletions(-)
+
+diff --git a/src/main/clojure/clojure/math/combinatorics.cljc b/src/main/clojure/clojure/math/combinatorics.cljc
+index 30c20d4..5d7b7e8 100644
+--- a/src/main/clojure/clojure/math/combinatorics.cljc
++++ b/src/main/clojure/clojure/math/combinatorics.cljc
+@@ -869,38 +869,23 @@ represented by freqs"
+               (recur (dec j))))]
+     (cond
+       (and r
+            (= j a)
+            (< (* (dec (v j)) (- r l))
+               (u j))) (m6 n m f c u v a b l r s)
+       (and (= j a)
+            (= (v j) 1)) (m6 n m f c u v a b l r s)
+-      :else (let [v (update v j dec)
+-                  diff-uv (if s (apply + (for [i (range a (inc j))]
+-                                           (- (u i) (v i)))) nil)
+-                  v (loop [ks (range (inc j) b)
+-                           v v]
++      :else (let [v (loop [ks (range (inc j) b)
++                           v  (update v j dec)]
+                       (if (empty? ks)
+                         v
+                         (let [k (first ks)]
+                           (recur (rest ks)
+-                                 (assoc v k (u k))))))
+-                  min-partitions-after-this (if s (- s (inc l)) 0)
+-                  amount-to-dec (if s (max 0 (- min-partitions-after-this diff-uv)) 0)
+-                  v (if (= amount-to-dec 0)
+-                      v
+-                      (loop [k-1 (dec b), v v
+-                             amount amount-to-dec]
+-                        (let [vk (v k-1)]
+-                          (if (> amount vk)
+-                            (recur (dec k-1)
+-                                   (assoc v k-1 0)
+-                                   (- amount vk))
+-                            (assoc v k-1 (- vk amount))))))]
++                                 (assoc v k (u k))))))]
+               (multiset-partitions-M n m f c u v a b l r s)))))
+ 
+ (defn- m6  ; M6
+   [n m f c u v a b l r s]
+   (if (= l 0)
+     ()
+     (let [l (dec l)
+           b a
+diff --git a/src/test/clojure/clojure/math/test_combinatorics.cljc b/src/test/clojure/clojure/math/test_combinatorics.cljc
+index bbb941c..56bf4d8 100644
+--- a/src/test/clojure/clojure/math/test_combinatorics.cljc
++++ b/src/test/clojure/clojure/math/test_combinatorics.cljc
+@@ -192,13 +192,13 @@
+            (partitions nil) '(())
+            (partitions [1 1 1]) '(([1 1 1]) ([1 1] [1]) ([1] [1] [1]))
+            (partitions [1 1 2]) '(([1 1 2]) ([1 1] [2]) ([1 2] [1]) ([1] [1] [2])))
+     (doseq [num-items (range 0 4)
+             lo (range -1 (+ 2 num-items))
+             hi (range -1 (+ 2 num-items))]
+       (is (= (partitions (range num-items) :min lo :max hi)
+              (filter #(<= lo (count %) hi) (partitions (range num-items)))))) ; tests partitions-H
+-    (doseq [num-items (range 2 4)
++    (doseq [num-items (range 2 7)
+             lo (range -1 (+ 2 num-items))
+             hi (range -1 (+ 2 num-items))]
+       (is (= (partitions (cons 0 (range (dec num-items))) :min lo :max hi)
+              (filter #(<= lo (count %) hi) (partitions (cons 0 (range (dec num-items)))))))))) ; tests partitions-M
+-- 
+2.39.2
+

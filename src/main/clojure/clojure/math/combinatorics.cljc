@@ -15,13 +15,13 @@
 (ns
   #^{:author "Mark Engelberg",
      :doc "Efficient, functional algorithms for generating lazy
-sequences for common combinatorial functions. (See the source code 
+sequences for common combinatorial functions. (See the source code
 for a longer description.)"}
   clojure.math.combinatorics
   (:refer-clojure :exclude [update]))
 
 (comment
-"  
+"
 (combinations items t) - A lazy sequence of all the unique
 ways of taking t different elements from items.
 Example: (combinations [1 2 3] 2) -> ((1 2) (1 3) (2 3))
@@ -144,7 +144,7 @@ Most of these algorithms are derived from algorithms found in Knuth's wonderful 
           (conj distribution [index quantity-to-distribute total])
           (recur (conj distribution [index mi (+ already-distributed mi)])
                  (inc index)
-                 (+ already-distributed mi))))))) 
+                 (+ already-distributed mi)))))))
 
 ;; Helper function for bounded-distributions
 (defn- next-distribution [m total distribution]
@@ -153,7 +153,7 @@ Most of these algorithms are derived from algorithms found in Knuth's wonderful 
       (< index (dec (count m)))
       (if (= this-bucket 1)
         (conj (pop distribution) [(inc index) 1 this-and-to-the-left])
-        (conj (pop distribution) 
+        (conj (pop distribution)
               [index (dec this-bucket) (dec this-and-to-the-left)]
               [(inc index) 1 this-and-to-the-left])),
       ; so we have stuff in the last bucket
@@ -162,21 +162,21 @@ Most of these algorithms are derived from algorithms found in Knuth's wonderful 
       (loop [distribution (pop distribution)],
         (let
           [[index this-bucket this-and-to-the-left] (peek distribution),
-           distribution (if (= this-bucket 1) 
+           distribution (if (= this-bucket 1)
                           (pop distribution)
                           (conj (pop distribution)
                                 [index (dec this-bucket) (dec this-and-to-the-left)]))],
           (cond
-            (<= (- total (dec this-and-to-the-left)) (apply + (subvec m (inc index))))       
+            (<= (- total (dec this-and-to-the-left)) (apply + (subvec m (inc index))))
             (distribute m (inc index) total distribution (dec this-and-to-the-left)),
-            
+
             (seq distribution) (recur distribution)
             :else nil))))))
-      
+
 ;; Helper function for multi-comb
 (defn- bounded-distributions
   [m t]
-  (let [step 
+  (let [step
         (fn step [distribution]
           (cons distribution
                 (lazy-seq (when-let [next-step (next-distribution m t distribution)]
@@ -197,16 +197,16 @@ Most of these algorithms are derived from algorithms found in Knuth's wonderful 
       (join
        (for [[index this-bucket _] q]
          (repeat this-bucket (v index)))))))
-                
+
 (defn combinations
   "All the unique ways of taking t different elements from items"
-  [items t]      
+  [items t]
   (let [v-items (vec (reverse items))]
     (if (zero? t) (list ())
       (let [cnt (count items)]
         (cond (> t cnt) nil
               (= t 1) (for [item (distinct items)] (list item))
-              (all-different? items) (if (= t cnt) 
+              (all-different? items) (if (= t cnt)
                                         (list (seq items))
                                         (map #(map v-items %) (index-combinations t cnt))),
               :else (multi-comb items t))))))
@@ -301,16 +301,16 @@ In prior versions of the combinatorics library, there were two similar functions
     (map (partial map v) (lex-permutations indices))))
 
 (defn permutations
-  "All the distinct permutations of items, lexicographic by index 
+  "All the distinct permutations of items, lexicographic by index
   (special handling for duplicate items)."
   [items]
   (cond
     (sorted-numbers? items) (lex-permutations items),
-    
+
     (all-different? items)
     (let [v (vec items)]
       (map #(map v %) (lex-permutations (range (count v)))))
-    
+
     :else
     (multi-perm items)))
 
@@ -334,11 +334,11 @@ In prior versions of the combinatorics library, there were two similar functions
 (defn- factorial-numbers
   "Input is a non-negative base 10 integer, output is the number in the
 factorial number system (http://en.wikipedia.org/wiki/Factorial_number_system)
-expressed as a list of 'digits'" 
+expressed as a list of 'digits'"
   [n]
   {:pre [(integer? n) (not (neg? n))]}
   (loop [n n, digits (), divisor 1]
-    (if (zero? n) 
+    (if (zero? n)
       digits
       (let [q (quot n divisor), r (rem n divisor)]
         (recur q (cons r digits) (inc divisor))))))
@@ -349,7 +349,7 @@ expressed as a list of 'digits'"
       (recur (conj acc (first l)) (rest l) (dec n)))))
 
 (defn- nth-permutation-distinct
-  "Input should be a sorted sequential collection l of distinct items, 
+  "Input should be a sorted sequential collection l of distinct items,
 output is nth-permutation (0-based)"
   [l n]
   (assert (< n (factorial (count l)))
@@ -363,7 +363,7 @@ output is nth-permutation (0-based)"
       (if (empty? indices) perm
         (let [i (first indices),
               item (nth l i)]
-          (recur (rest indices) (remove-nth l i) (conj perm item))))))) 
+          (recur (rest indices) (remove-nth l i) (conj perm item)))))))
 
 ;; Now we generalize to collections with duplicates
 
@@ -375,9 +375,9 @@ output is nth-permutation (0-based)"
 (defn count-permutations
   "Counts the number of distinct permutations of l"
   [l]
-  (if (all-different? l) 
+  (if (all-different? l)
     (factorial (count l))
-    (count-permutations-from-frequencies (frequencies l))))    
+    (count-permutations-from-frequencies (frequencies l))))
 
 (defn- initial-perm-numbers
   "Takes a sorted frequency map and returns how far into the sequence of
@@ -418,18 +418,18 @@ lexicographic permutations you get by varying the first item"
 
 (defn- factorial-numbers-with-duplicates
   "Input is a non-negative base 10 integer n, and a sorted frequency map freqs.
-Output is a list of 'digits' in this wacky duplicate factorial number system" 
+Output is a list of 'digits' in this wacky duplicate factorial number system"
   [n freqs]
   (loop [n n, digits [], freqs freqs]
     (if (zero? n) (into digits (repeat (apply + (vals freqs)) 0))
-      (let [[index remainder] 
+      (let [[index remainder]
             (index-remainder (initial-perm-numbers freqs) n)]
         (recur remainder (conj digits index)
                (let [nth-key (nth (keys freqs) index)]
                  (dec-key freqs nth-key)))))))
 
 (defn- nth-permutation-duplicates
-  "Input should be a sorted sequential collection l of distinct items, 
+  "Input should be a sorted sequential collection l of distinct items,
 output is nth-permutation (0-based)"
   [l n]
   (assert (< n (count-permutations l))
@@ -441,7 +441,7 @@ output is nth-permutation (0-based)"
       (let [i (first indices),
             item (nth (keys freqs) i)]
         (recur (dec-key freqs item)
-               (rest indices) 
+               (rest indices)
                (conj perm item))))))
 
 ;; Now we create the public version, which detects which underlying algorithm to call
@@ -450,7 +450,7 @@ output is nth-permutation (0-based)"
   "(nth (permutations items)) but calculated more directly."
   [items n]
   (if (sorted-numbers? items)
-    (if (all-different? items) 
+    (if (all-different? items)
       (nth-permutation-distinct items n)
       (nth-permutation-duplicates items n))
     (if (all-different? items)
@@ -472,7 +472,7 @@ output is nth-permutation (0-based)"
     (= n (count-permutations items)) ()
     :else
     (if (sorted-numbers? items)
-      (if (all-different? items) 
+      (if (all-different? items)
         (vec-lex-permutations (nth-permutation-distinct items n))
         (vec-lex-permutations (nth-permutation-duplicates items n)))
       (if (all-different? items)
@@ -484,7 +484,7 @@ output is nth-permutation (0-based)"
               indices (join
                        (for [i (range (count v))]
                          (repeat (f (v i)) i)))]
-          (map (partial map v) 
+          (map (partial map v)
                (vec-lex-permutations
                  (nth-permutation-duplicates indices n))))))))
 
@@ -503,7 +503,7 @@ output is nth-permutation (0-based)"
 (defn- ^{:dynamic true} count-combinations-from-frequencies [freqs t]
   (let [counts (vals freqs)
         sum (apply + counts)]
-    (cond 
+    (cond
       (zero? t) 1
       (= t 1) (count freqs)
       (every? #{1} counts) (n-take-k (count freqs) t)
@@ -539,14 +539,14 @@ so that we can memoize over a series of calls."
 
 (defn- count-subsets-unmemoized
   [items]
-  (cond 
+  (cond
     (empty? items) 1
     (all-different? items) (expt-int 2 (count items))
     :else (apply +' (for [i (range 0 (inc (count items)))]
                         (count-combinations-unmemoized items i)))))
 
 (defn count-subsets
-  "(count (subsets items)) but computed more directly"  
+  "(count (subsets items)) but computed more directly"
   [items]
   (binding [count-combinations-from-frequencies
             (memoize count-combinations-from-frequencies)]
@@ -562,19 +562,19 @@ where items is a collection of distinct elements"
          n n]
     (if (or (zero? n) (empty? items)) (into comb (take t items))
       (let [dc-dt (n-take-k (dec (count items)) (dec t))]
-        (if (< n dc-dt) 
+        (if (< n dc-dt)
           (recur (conj comb (first items)) (rest items) (dec t) n)
           (recur comb (rest items) t (- n dc-dt)))))))
-                         
+
 (defn- nth-combination-freqs
   "The nth element of the sequence of t-combinations of the multiset
 represented by freqs"
   [freqs t n]
   (loop [comb [],
          freqs freqs,
-         t t, 
+         t t,
          n n]
-    (if (or (zero? n) (empty? freqs)) 
+    (if (or (zero? n) (empty? freqs))
       (into comb (take t (join (for [[k v] freqs] (repeat v k)))))
       (let [first-key (first (keys freqs)),
             remove-one-key (dec-key freqs first-key)
@@ -582,12 +582,12 @@ represented by freqs"
         (if (< n dc-dt)
           (recur (conj comb first-key) remove-one-key (dec t) n)
           (recur comb (dissoc freqs first-key) t (- n dc-dt)))))))
-              
+
 (defn nth-combination
   "The nth element of the sequence of t-combinations of items"
   [items t n]
   (assert (< n (count-combinations items t))
-          (print-str n "is too large. Input has only" 
+          (print-str n "is too large. Input has only"
                      (count-combinations-unmemoized items t) "combinations."))
   (if (all-different? items)
     (nth-combination-distinct items t n)
@@ -609,12 +609,12 @@ represented by freqs"
     (let [num-combinations (count-combinations items size)]
       (if (< n num-combinations)
         (nth-combination items size n)
-        (recur (inc size) (- n num-combinations)))))) 
+        (recur (inc size) (- n num-combinations))))))
 
 ;; Now let's go the other direction, from a sortable collection to the nth
 ;; position in which we would find the collection in the lexicographic sequence
 ;; of permutations
-    
+
 (defn- list-index
   "The opposite of nth, i.e., from an item in a list, find the n"
   [l item]
@@ -627,7 +627,7 @@ represented by freqs"
   [l]
   (loop [l l, index #?(:clj (Long/valueOf 0) :cljs 0), n (dec (count l))]
     (if (empty? l) index
-      (recur (rest l) 
+      (recur (rest l)
              (+' index (*' (factorial n) (list-index (sort l) (first l))))
              (dec n)))))
 
@@ -723,14 +723,14 @@ represented by freqs"
                                                     (reify-bool (== (b j) (a j))))]
                                 (cond
                                   (== i n) [a b]
-                                  
+
                                   (and s (> i (- (- n x) 1)))
                                   (let [new-a-i (+ (- i n) s)]
                                     (recur (assoc a i new-a-i)
                                            (assoc b i current-max)
                                            (inc i)
                                            (max current-max (inc new-a-i))))
-                                  
+
                                   :else (recur (assoc a i 0)
                                                (assoc b i current-max)
                                                (inc i)
@@ -747,7 +747,7 @@ represented by freqs"
           to (if (and to (>= to N)) nil to)]
       (cond
         (not (<= 1 (or from 1) (or to N) N)) ()
-        
+
         (= N 0) '(())
         (= N 1) '(([0]))
         (= to 1) `((~(range N)))
@@ -764,102 +764,204 @@ represented by freqs"
     (for [parts lex]
       (for [part parts]
         (-> (reduce (fn [v o] (conj! v (items o))) (transient []) part) ; mapv
-          persistent!)))))
+            persistent!)))))
 
-;;;;;; Partitions - Algorithm M
+;;;;;; Partitions - [Algorithm M](https://archive.org/details/B-001-001-251/page/428/mode/2up)
 
-; In Algorithm M, the idea is to find the partitions of a list of items that may contain duplicates.
-; Within the algorithm, the collections are stored as "multisets," which are maps that map items
-; to their frequency. (keyval pairs with a value of 0 are not included.) Note that in this algorithm,
-; the multisets are not stored as maps, but all multisets are stored together across multiple vectors.
+;; In Algorithm M, the idea is to find the partitions of a list of items that
+;; may contain duplicates. Within the algorithm, the collections are stored
+;; as "multisets," which are maps that map items to their frequency. (keyval
+;; pairs with a value of 0 are not included.) Note that in this algorithm, the
+;; multisets not are stored as maps, but all multisets are stored together
+;; across multiple vectors.
 
-; Here is what the internal vectors/variables will look like when the algorithm is visiting the
-; partition ([1 1 2 2 2] [1 2] [1]):
+;; Here is what the internal vectors/variables will look like when the algorithm
+;; is visiting the partition ([1 1 2 2 2] [1 2] [1]):
 
-; c[i] =      1 2|1 2|1
-; v[i] =      2 3|1 1|1
-; u[i] =      4 4|2 1|1
-; ---------------------------
-;    i =      0 1 2 3 4 5
-; f[x]=i:     0   1   2 3
-; l = 2
-; n = 8
-; m = 2
+;; TODO make clear that the f row is totally wrong here??
 
-; You can think of (c,v) and (c,u) as the (keys,vals) pairs of two multisets.
-; u[i] represents how many c[i]'s were left before choosing the v values for the current partition.
-; (Note that v[i] could be 0 if u[i] is not 0.)
-; f[x] says where to begin looking in c, u, and v, to find information about the xth partition.
-; l is the number of partitions minus one.
-; n is the total amount of all items (including duplicates).
-; m is the total amount of distinct items.
+;; c[i] =      1 2|1 2|1
+;; v[i] =      2 3|1 1|1
+;; u[i] =      4 4|2 1|1
+;; ---------------------------
+;;    i =      0 1 2 3 4 5
+;; f[x]=i:     0   1   2 3
+;; l = 2
+;; n = 8
+;; m = 2
 
-; During the algorithm, a and b are temporary variables that end up as f(l) and f(l+1).
-; In other words, they represent the boundaries of the "workspace" of the most recently written-out partition.
+;; You can think of (c,v) and (c,u) as the (keys,vals) pairs of two multisets.
+;; u[i] represents how many c[i]'s were left before choosing the v values for the current partition.
+;; (Note that v[i] could be 0 if u[i] is not 0.)
+;; f[x] says where to begin looking in c, u, and v, to find information about the xth partition.
+;; l is the number of partitions minus one.
+;; n is the total amount of all items (including duplicates).
+;; m is the total amount of distinct items.
 
-(declare m5 m6)
+;; During the algorithm, a and b are temporary variables that end up as f(l) and
+;; f(l+1). In other words, they represent the boundaries of the "workspace" of
+;; the most recently written-out partition.
+;;
+;; NOTE this now makes sense... they are the bounds of the current one that
+;; we're working on?
+
+(declare m2 m5 m6)
 
 (defn- multiset-partitions-M
-  ([multiset r s] ; M1
-                  (let [n (apply + (vals multiset))
-                        m (count multiset)
-                        f []
-                        c []
-                        u []
-                        v []
-                        ; these vectors will grow over time, as new values are assoc'd into the next spots.
-                        [c u v] (loop [j 0, c c, u u, v v]
-                                  (if (= j m)
-                                    [c u v]
-                                    (recur (inc j)
-                                           (assoc c j (inc j))
-                                           (assoc u j (multiset (inc j)))
-                                           (assoc v j (multiset (inc j))))))
-                        a 0, b m, l 0
-                        f (assoc f 0 0, 1 m)
-                        stack ()]
-                    (multiset-partitions-M n m f c u v a b l r s)))
+  ;; NOTE that this first arity is only ever called from the start.
+  ([multiset r s] ;; M1
+   ;; TODO we already know N... just pass it??
+   (let [;; total number of items, including duplicates.
+         n (apply + (vals multiset))
+         ;; the number of distinct items.
+         m (count multiset)
+
+         ;; I still don't get these because I still don't get `f`.
+         a 0
+         b m
+         ;; NOTE `f` consists of indices of the STARTS of each of the pieces of
+         ;; the partition being considered. So here we start with 0, and
+         ;; probably we could rewrite this shit to not have the final element.
+         ;; But let's see how it goes.
+         f [a b]
+
+         ;; (dec <number of partititions>), starts with 0 because first
+         ;; partition is the full set. So the min and the max filters obviously
+         ;; are going to mess with this. NOTE so this should always
+         ;; equal (- (count f) 2?)
+         l 0
+
+         ;; TODO fix all of this nonsense...
+         c []
+         u []
+         v []
+         ;; NOTE that this is the initialization. These vectors will grow over
+         ;; time, as new values are assoc'd into the next spots.
+         ;;
+         ;; NOTE `c` ends up as the keys, it's just the range. u and v end up as the values.
+         [c u v] (loop [j 0, c c, u u, v v]
+                   (if (= j m)
+                     [c u v]
+                     (let [j+1   (inc j)
+                           j+1-v (multiset j+1)]
+                       (recur j+1
+                              (assoc c j j+1)
+                              (assoc u j j+1-v)
+                              (assoc v j j+1-v)))))]
+     (multiset-partitions-M n m f c u v a b l r s)))
+  ;;`r` and `s` are the max and min bounds, respectively
   ([n m f c u v a b l r s]
-    (let [[u v c j k] (loop [j a, k b, x false     ; M2
-                             u u, v v, c c]
-                        (if (>= j b)
-                          [u v c j k]
-                          (let [u (assoc u k (- (u j) (v j)))]
-                            (if (= (u k) 0)
-                              (recur (inc j), k, true
-                                     u, v, c)
-                              (if-not x
-                                (let [c (assoc c k (c j))
-                                      v (assoc v k (min (v j) (u k)))
-                                      x (< (u k) (v j))
-                                      k (inc k)
-                                      j (inc j)]
-                                  (recur j, k, x
-                                         u, v, c))
-                                (let [c (assoc c k (c j))
-                                      v (assoc v k (u k))
-                                      k (inc k)
-                                      j (inc j)]
-                                  (recur j, k, x
-                                         u, v, c)))))))]
-      (cond  ; M3
-             (and r
-                  (> k b)
-                  (= l (dec r))) (m5 n m f c u v a b l r s)
-             (and s
-                  (<= k b)
-                  (< (inc l) s)) (m5 n m f c u v a b l r s)
-             (> k b) (let [a b, b k, l (inc l)
-                           f (assoc f (inc l) b)]
-                       (recur n m f c u v a b l r s))
-             :else (let [part (for [y (range (inc l))]
-                                (let [first-col (f y)
-                                      last-col (dec (f (inc y)))]
-                                  (into {} (for [z (range first-col (inc last-col))
-                                                 :when (not= (v z) 0)]
-                                             [(c z) (v z)]))))]
-                     (cons part ; M4
-                           (lazy-seq (m5 n m f c u v a b l r s))))))))
+   ;; OKAY so here is the tricky part. We have the keys and values o
+   ;;
+   ;; ;; NOTE in his vector notation, for each partition element, (zipmap c v)
+   ;; is the actual multiset we care about.
+   ;;
+   ;; (c, u) is the unpartitioned amount of each BEFORE `v` gets set. So `v` can
+   ;; only pull maximally from the `u`. So annoying, can't we store a pair or
+   ;; something in the multiset value?
+   ;;
+   ;;
+   ;; NOTES AGAIN!!!! M1 I've totally got, I get the initialization. Now, let's
+   ;; understand `m2`.
+
+   ;; ## M2: subtract `v` from `u`. Initially they are the SAME, which is why we
+   ;; ## at first get partition equal to the full set, I guess?
+   ;;
+   ;; "At this point we want to find all partitions of the vector u in the
+   ;; current frame, into parts that are lexicographically < v. First we will
+   ;; use v itself."
+
+   ;; so in this loop, we are starting with the current frame, and writing a NEW
+   ;; frame to the right.
+   (let [[c u v k] (m2 a b c u v)]
+     (cond  ;; M3
+       (and r
+            (> k b)
+            (= l (dec r))) (m5 n m f c u v a b l r s)
+       (and s
+            (<= k b)
+            (< (inc l) s)) (m5 n m f c u v a b l r s)
+       (> k b) (let [a b, b k, l (inc l)
+                     f (assoc f (inc l) b)]
+                 (recur n m f c u v a b l r s))
+       :else (let [part (for [y (range (inc l))]
+                          (let [first-col (f y)
+                                last-col (dec (f (inc y)))]
+                            (into {} (for [z (range first-col (inc last-col))
+                                           :when (not= (v z) 0)]
+                                       [(c z) (v z)]))))]
+               (cons part ; M4
+                     (lazy-seq (m5 n m f c u v a b l r s))))))))
+
+(defn- m2
+  "Figure out the next partition conj-ed onto the end, AND choose the `v`!"
+  ([a b c u v]
+   ;; set initial variables...
+   (prn b a b false c u v)
+   (m2 b a b false c u v))
+  ( [b j k changed? c u v]
+   ;; Remember, `a` and `b` are the bounds of the current
+   ;; stack frame. So we are going to roll through the
+   ;; `subvec` from a to b-1, writing something new from `b`
+   ;; onward. It would be more "functional" to build the new
+   ;; thing vs writing it on the end, at least conj-ing it??
+
+   (if-not (< j b)
+     [c u v k]
+     (let [u (assoc u k (- (u j) (v j)))]
+       ;; So if it's totally drained don't move on.
+       (if (zero? (u k))
+         ;; Does this branch mean that we have totally drained
+         ;; a column? If so, we are probably going to
+         ;; overwrite that `k` in a moment... unless it's the
+         ;; last one, then the 0 can stick around. NOTE That
+         ;; is a little janky.
+         ;;
+         ;; TODO I bet we can move to `conj` and NOT stick the
+         ;; zero on.
+         (recur b (inc j) k true c u v)
+         ;; TODO is there a Knuth bug here?? does `x` really
+         ;; mean `has u changed??` Or does it mean "has the
+         ;; pointer moved"?
+         (if-not changed?
+           ;; If `v` "has not changed"...
+           (let [
+                 ;; In both cases, stick the
+                 ;; currently-considered element ID onto `c`.
+                 ;; But what value will we associate with it?
+                 c (assoc c k (c j))
+
+                 ;; In this case, `u_k` has already been
+                 ;; updated. So we are really taking `(min (v
+                 ;; j) (- (u j) (v j))... and we are only I
+                 ;; THINK in this branch if that has not
+                 ;; resulted in a 0. So we should be positive
+                 ;; here. the question is, then, did we pull
+                 ;; more? like (min 1 4-1), vs (min 3 4-3)?
+                 v (assoc v k (min (v j) (u k)))
+                 ;; And changed is `(< (- (u j) (v j)) (v
+                 ;; j))`, i.e., did we go with `u_k` for `v`?
+                 ;;
+                 ;; `v`'s entry is going to be the amount that
+                 ;; we are taking from `u`. So `u` was
+                 ;; available... NOTE okay, so we already set
+                 ;; the `u` entry by taking off the PREVIOUS
+                 ;; `v`. Now we are determining what we choose
+                 ;; for our NEW `v`, what we are going to take
+                 ;; off for the next time.
+                 ;;
+                 ;; NOTE So we are setting the new `v` here to
+                 ;; be either
+                 changed? (< (u k) (v j))
+                 j (inc j)
+                 k (inc k)]
+             (recur b j k changed? c u v))
+           ;; If `v` "has changed"...
+           (let [c (assoc c k (c j))
+                 v (assoc v k (u k))
+                 k (inc k)
+                 j (inc j)]
+             (recur b j k changed? c u v))))))))
 
 (defn- m5  ; M5
   [n m f c u v a b l r s]
@@ -874,17 +976,33 @@ represented by freqs"
               (u j))) (m6 n m f c u v a b l r s)
       (and (= j a)
            (= (v j) 1)) (m6 n m f c u v a b l r s)
-      :else (let [v (loop [ks (range (inc j) b)
-                           v  (update v j dec)]
+      :else (let [v (update v j dec)
+                  ;; to do my fix, kill diff-uv... see patch, but here is the deal.
+                  diff-uv (if s (apply + (for [i (range a (inc j))]
+                                           (- (u i) (v i)))) nil)
+                  v (loop [ks (range (inc j) b)
+                           v v]
                       (if (empty? ks)
                         v
                         (let [k (first ks)]
                           (recur (rest ks)
-                                 (assoc v k (u k))))))]
+                                 (assoc v k (u k))))))
+                  min-partitions-after-this (if s (- s (inc l)) 0)
+                  amount-to-dec (if s (max 0 (- min-partitions-after-this diff-uv)) 0)
+                  v (if (= amount-to-dec 0)
+                      v
+                      (loop [k-1 (dec b), v v
+                             amount amount-to-dec]
+                        (let [vk (v k-1)]
+                          (if (> amount vk)
+                            (recur (dec k-1)
+                                   (assoc v k-1 0)
+                                   (- amount vk))
+                            (assoc v k-1 (- vk amount))))))]
               (multiset-partitions-M n m f c u v a b l r s)))))
 
 (defn- m6  ; M6
-  [n m f c u v a b l r s]
+  [n m f c u v a _b l r s]
   (if (= l 0)
     ()
     (let [l (dec l)
@@ -892,32 +1010,44 @@ represented by freqs"
           a (f l)]
       (m5 n m f c u v a b l r s))))
 
+(defn items->multiset
+  "returns [ditems, multiset]"
+  [items]
+  (let [freqs  (frequencies items)
+        ditems (into [] (distinct) items)]
+    [ditems (into {} (map-indexed
+                      (fn [i item]
+                        (let [j (inc i)]
+                          [j (freqs item)])))
+                  ditems)]))
+
+(defn multiset->items
+  "Returns the items."
+  [ditems mset]
+  (into [] (mapcat
+            (fn [[i n]]
+              (repeat n (ditems (dec i)))))
+        mset))
+
 (defn- partitions-M
   [items & {from :min to :max}]
-  (if (= (count items) 0)
-    (if (<= (or from 0) 0 (or to 0))
-      '(())
-      ())
-    (let [items (vec items)
-          ditems (vec (distinct items))
-          freqs (frequencies items)
-          N (count items)
-          M (count ditems)
-          from (if (and from (<= from 1)) nil from)
-          to (if (and to (>= to N)) nil to)]
-      (cond
-        (not (<= 1 (or from 1) (or to N) N)) ()
-        (= N 1) `(([~(first items)]))
-        :else (let [start-multiset (into {} (for [i (range M)
-                                                  :let [j (inc i)]]
-                                              [j (freqs (ditems i))]))
-                    parts (multiset-partitions-M start-multiset to from)]
-                (->> multiset
-                     (mapjoin (fn [[index numtimes]]
-                                (repeat numtimes (ditems (dec index)))))
-                     vec
-                     (for [multiset part])
-                     (for [part parts])))))))
+  (let [N (count items)]
+    (if (= N 0)
+      (if (<= (or from 0) 0 (or to 0))
+        '(())
+        ())
+      ;; `from` and `to` only make sense inside the bounds.
+      (let [from (if (and from (<= from 1)) nil from)
+            to   (if (and to (>= to N)) nil to)]
+        (cond
+          ;; Check if the order is reversed?
+          (not (<= 1 (or from 1) (or to N) N)) ()
+          (= N 1) (list (list [(first items)]))
+          :else
+          (let [[ditems start-multiset] (items->multiset items)]
+            (for [part (multiset-partitions-M start-multiset to from)]
+              (for [multiset part]
+                (multiset->items ditems multiset)))))))))
 
 (defn partitions
   "All the lexicographic distinct partitions of items.
