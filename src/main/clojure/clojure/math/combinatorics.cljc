@@ -875,140 +875,145 @@ represented by freqs"
    ;; frame to the right.
    (let [[c u v k] (m2 a b c u v)]
      (cond  ;; M3
-       (and r
-            (> k b)
-            (= l (dec r))) (m5 n m f c u v a b l r s)
-       (and s
-            (<= k b)
-            (< (inc l) s)) (m5 n m f c u v a b l r s)
-       (> k b) (let [a b, b k, l (inc l)
-                     f (assoc f (inc l) b)]
-                 (recur n m f c u v a b l r s))
-       :else (let [part (for [y (range (inc l))]
-                          (let [first-col (f y)
-                                last-col (dec (f (inc y)))]
-                            (into {} (for [z (range first-col (inc last-col))
-                                           :when (not= (v z) 0)]
-                                       [(c z) (v z)]))))]
-               (cons part ; M4
-                     (lazy-seq (m5 n m f c u v a b l r s))))))))
+       (or (and r (> k b)  (= l (dec r)))
+           (and s (<= k b) (< (inc l) s)))
+       (m5 n m f c u v a b l r s)
+
+       ;; I think this is, did it march forward at all? was a new partition
+       ;; added? TODO understand this! TODO don't reuse variables too.
+       (> k b)
+       (let [a b
+             b k
+             l (inc l)
+             f (assoc f (inc l) b)]
+         (recur n m f c u v a b l r s))
+
+       :else
+       (lazy-seq
+        (let [part (for [[p q] (partition 2 1 f)]
+                     ;; TODO recover the zero filter?
+                     (zipmap (subvec c p q)
+                             (subvec v p q)))]
+          (cons part (m5 n m f c u v a b l r s))))))))
 
 (defn- m2
   "Figure out the next partition conj-ed onto the end, AND choose the `v`!"
-  ([a b c u v]
-   ;; set initial variables...
-   (prn b a b false c u v)
-   (m2 b a b false c u v))
-  ( [b j k changed? c u v]
-   ;; Remember, `a` and `b` are the bounds of the current
-   ;; stack frame. So we are going to roll through the
-   ;; `subvec` from a to b-1, writing something new from `b`
-   ;; onward. It would be more "functional" to build the new
-   ;; thing vs writing it on the end, at least conj-ing it??
+  [a b c u v]
+  ;; Remember, `a` and `b` are the bounds of the current stack frame. So we are
+  ;; going to roll through the `subvec` from a to b-1, writing something new
+  ;; from `b` onward. It would be more "functional" to build the new thing vs
+  ;; writing it on the end, at least conj-ing it??
+  ;;
+  ;; NOTE we are setting the new row of `u` by subtracting the current `v` from
+  ;; the current `u` to add a new partition. Then we set the new `v` by either
+  ;; copying over the old one, or copying `u`.
+  (loop [j a, k b, v-changed? false, c c, u u, v v]
+    (if (< j b)
+      (let [uk (- (u j) (v j))]
+        (if (zero? uk)
+          (recur (inc j) k true c u v)
+          (let [c (assoc c k (c j))
+                u (assoc u k uk)
+                v (assoc v k (if v-changed?
+                               uk
+                               (min uk (v j))))
+                v-changed? (or v-changed? (< uk (v j)))]
+            (recur (inc j) (inc k) v-changed? c u v))))
+      [c u v k])))
 
-   (if-not (< j b)
-     [c u v k]
-     (let [u (assoc u k (- (u j) (v j)))]
-       ;; So if it's totally drained don't move on.
-       (if (zero? (u k))
-         ;; Does this branch mean that we have totally drained
-         ;; a column? If so, we are probably going to
-         ;; overwrite that `k` in a moment... unless it's the
-         ;; last one, then the 0 can stick around. NOTE That
-         ;; is a little janky.
-         ;;
-         ;; TODO I bet we can move to `conj` and NOT stick the
-         ;; zero on.
-         (recur b (inc j) k true c u v)
-         ;; TODO is there a Knuth bug here?? does `x` really
-         ;; mean `has u changed??` Or does it mean "has the
-         ;; pointer moved"?
-         (if-not changed?
-           ;; If `v` "has not changed"...
-           (let [
-                 ;; In both cases, stick the
-                 ;; currently-considered element ID onto `c`.
-                 ;; But what value will we associate with it?
-                 c (assoc c k (c j))
-
-                 ;; In this case, `u_k` has already been
-                 ;; updated. So we are really taking `(min (v
-                 ;; j) (- (u j) (v j))... and we are only I
-                 ;; THINK in this branch if that has not
-                 ;; resulted in a 0. So we should be positive
-                 ;; here. the question is, then, did we pull
-                 ;; more? like (min 1 4-1), vs (min 3 4-3)?
-                 v (assoc v k (min (v j) (u k)))
-                 ;; And changed is `(< (- (u j) (v j)) (v
-                 ;; j))`, i.e., did we go with `u_k` for `v`?
-                 ;;
-                 ;; `v`'s entry is going to be the amount that
-                 ;; we are taking from `u`. So `u` was
-                 ;; available... NOTE okay, so we already set
-                 ;; the `u` entry by taking off the PREVIOUS
-                 ;; `v`. Now we are determining what we choose
-                 ;; for our NEW `v`, what we are going to take
-                 ;; off for the next time.
-                 ;;
-                 ;; NOTE So we are setting the new `v` here to
-                 ;; be either
-                 changed? (< (u k) (v j))
-                 j (inc j)
-                 k (inc k)]
-             (recur b j k changed? c u v))
-           ;; If `v` "has changed"...
-           (let [c (assoc c k (c j))
-                 v (assoc v k (u k))
-                 k (inc k)
-                 j (inc j)]
-             (recur b j k changed? c u v))))))))
+;; So once `changed?` becomes true, it can never go unchanged again.
 
 (defn- m5  ; M5
   [n m f c u v a b l r s]
   (let [j (loop [j (dec b)]
-            (if (not= (v j) 0)
-              j
-              (recur (dec j))))]
+            ;; Go backwards to the first non-zero j entry, starting with `(dec
+            ;; b)`.
+            (if (zero? (v j))
+              (recur (dec j))
+              j))]
     (cond
       (and r
            (= j a)
            (< (* (dec (v j)) (- r l))
-              (u j))) (m6 n m f c u v a b l r s)
-      (and (= j a)
-           (= (v j) 1)) (m6 n m f c u v a b l r s)
-      :else (let [v (update v j dec)
-                  ;; to do my fix, kill diff-uv... see patch, but here is the deal.
-                  diff-uv (if s (apply + (for [i (range a (inc j))]
-                                           (- (u i) (v i)))) nil)
-                  v (loop [ks (range (inc j) b)
-                           v v]
-                      (if (empty? ks)
-                        v
-                        (let [k (first ks)]
-                          (recur (rest ks)
-                                 (assoc v k (u k))))))
-                  min-partitions-after-this (if s (- s (inc l)) 0)
-                  amount-to-dec (if s (max 0 (- min-partitions-after-this diff-uv)) 0)
-                  v (if (= amount-to-dec 0)
-                      v
-                      (loop [k-1 (dec b), v v
-                             amount amount-to-dec]
-                        (let [vk (v k-1)]
-                          (if (> amount vk)
-                            (recur (dec k-1)
-                                   (assoc v k-1 0)
-                                   (- amount vk))
-                            (assoc v k-1 (- vk amount))))))]
-              (multiset-partitions-M n m f c u v a b l r s)))))
+              (u j)))
+      (m6 n m f c u v a b l r s)
 
-(defn- m6  ; M6
+      (and (= j a)
+           (= (v j) 1))
+      (m6 n m f c u v a b l r s)
+
+      :else
+      ;; Decrement `v_j` and set all remaining elements in THIS partition to
+      ;; `u`. NOTE: Every time you adjust `v_j` in any capacity, you set the
+      ;; rest of the partition to `u`.
+      (let [v (update v j dec)
+            ;; to do my fix, kill diff-uv... see patch, but here is the deal.
+            diff-uv (if s (apply + (for [i (range a (inc j))]
+                                     (- (u i) (v i)))) nil)
+            v (loop [ks (range (inc j) b)
+                     v v]
+                (if (empty? ks)
+                  v
+                  (let [k (first ks)]
+                    (recur (rest ks)
+                           (assoc v k (u k))))))
+            min-partitions-after-this (if s (- s (inc l)) 0)
+            amount-to-dec (if s (max 0 (- min-partitions-after-this diff-uv)) 0)
+            v (if (zero? amount-to-dec)
+                v
+                (loop [k-1 (dec b), v v
+                       amount amount-to-dec]
+                  (let [vk (v k-1)]
+                    (if (> amount vk)
+                      (recur (dec k-1)
+                             (assoc v k-1 0)
+                             (- amount vk))
+                      (assoc v k-1 (- vk amount))))))]
+        (multiset-partitions-M n m f c u v a b l r s)))))
+
+(defn- m5*
+  ;; Understand this one first.
+  [n m f c u v a b l r s]
+  (let [j (loop [j (dec b)]
+            ;; Go backwards to the first non-zero j entry, starting with `(dec
+            ;; b)`.
+            (if (zero? (v j))
+              (recur (dec j))
+              j))]
+    (cond
+      (and r
+           (= j a)
+           (< (* (dec (v j)) (- r l))
+              (u j)))
+      (m6 n m f c u v a b l r s)
+
+      (and (= j a)
+           (= (v j) 1))
+      (m6 n m f c u v a b l r s)
+
+      :else
+      (let [v (loop [ks (range (inc j) b)
+                     v  (update v j dec)]
+                (if (empty? ks)
+                  v
+                  (let [k (first ks)]
+                    (recur (rest ks)
+                           (assoc v k (u k))))))]
+        (multiset-partitions-M n m f c u v a b l r s)))))
+
+;; OKAY! So I think m5 does something and m6 goes backwards and does it for the
+;; previous partish.
+
+(defn- m6
+  "Return the previous partition... then call m5??"
   [n m f c u v a _b l r s]
-  (if (= l 0)
+  (if (zero? l)
     ()
-    (let [l (dec l)
-          b a
-          a (f l)]
-      (m5 n m f c u v a b l r s))))
+    (let [l' (dec l)
+          a' (f l')
+          b' a
+          f (pop f)]
+      (m5 n m f c u v a' b' l' r s))))
 
 (defn items->multiset
   "returns [ditems, multiset]"
