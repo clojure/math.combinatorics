@@ -811,9 +811,7 @@ represented by freqs"
   ;; NOTE that this first arity is only ever called from the start.
   ([multiset r s] ;; M1
    ;; TODO we already know N... just pass it??
-   (let [;; total number of items, including duplicates.
-         n (apply + (vals multiset))
-         ;; the number of distinct items.
+   (let [;; the number of distinct items.
          m (count multiset)
 
          ;; NOTE `f` consists of indices of the STARTS of each of the pieces of
@@ -837,39 +835,41 @@ represented by freqs"
                               (assoc c j j+1)
                               (assoc u j j+1-v)
                               (assoc v j j+1-v)))))]
-     (multiset-partitions-M n m f c u v r s)))
+     (multiset-partitions-M f c u v r s)))
   ;;`r` and `s` are the max and min bounds, respectively
-  ([n m f c u v r s]
+  ([f c u v r s]
    ;; "At this point we want to find all partitions of the vector u in the
    ;; current frame, into parts that are lexicographically < v. First we will
    ;; use v itself."
 
    ;; so in this loop, we are starting with the current frame, and writing a NEW
    ;; frame to the right.
-   (let [a         (peek (pop f))
-         b         (peek f)
-         n-blocks  (dec (count f))
-         [c u v k] (m2 a b c u v)]
-     (cond (or (and r (> k b) (= n-blocks r))
-               (and s (= k b) (< n-blocks s)))
-           (m5 n m f c u v r s)
+   (let [n-blocks      (dec (count f))
+         [f' c' u' v'] (m2 f c u v)]
+     (cond
+       ;; Did we march forward?
+       (> (count f') (count f))
+       (if (and r (= n-blocks r))
+         ;; Did marching forward push us beyond the max? Feels like we let
+         ;; ourselves do too much work!
+         (m5 f c u v r s)
+         (recur f' c' u' v' r s))
 
-           ;; Did we march forward?
-           (> k b)
-           (let [f' (conj f k)]
-             (recur n m f' c u v r s))
+       ;; Did we NOT march forward, but we don't have enough blocks yet?
+       (and s (< n-blocks s))
+       (m5 f c u v r s)
 
-           :else
-           (lazy-seq
-            (let [part (for [[p q] (partition 2 1 f)]
-                         ;; TODO recover the zero filter?
-                         (zipmap (subvec c p q)
-                                 (subvec v p q)))]
-              (cons part (m5 n m f c u v r s))))))))
+       :else
+       (lazy-seq
+        (let [part (for [[p q] (partition 2 1 f)]
+                     ;; TODO recover the zero filter?
+                     (zipmap (subvec c p q)
+                             (subvec v p q)))]
+          (cons part (m5 f c u v r s))))))))
 
 (defn- m2
   "Figure out the next partition conj-ed onto the end, AND choose the `v`!"
-  [a b c u v]
+  [f c u v]
   ;; Remember, `a` and `b` are the bounds of the current stack frame. So we are
   ;; going to roll through the `subvec` from a to b-1, writing something new
   ;; from `b` onward. It would be more "functional" to build the new thing vs
@@ -878,23 +878,28 @@ represented by freqs"
   ;; NOTE we are setting the new row of `u` by subtracting the current `v` from
   ;; the current `u` to add a new partition. Then we set the new `v` by either
   ;; copying over the old one, or copying `u`.
-  (loop [j a, k b, v-changed? false, c c, u u, v v]
-    (if (< j b)
-      (let [uk (- (u j) (v j))]
-        (if (zero? uk)
-          (recur (inc j) k true c u v)
-          (let [c (assoc c k (c j))
-                u (assoc u k uk)
-                v (assoc v k (if v-changed?
-                               uk
-                               (min uk (v j))))
-                v-changed? (or v-changed? (< uk (v j)))]
-            (recur (inc j) (inc k) v-changed? c u v))))
-      [c u v k])))
+  (let [a (peek (pop f))
+        b (peek f)]
+    (loop [j a, k b, v-changed? false, c c, u u, v v]
+      (if (< j b)
+        (let [uk (- (u j) (v j))]
+          (if (zero? uk)
+            (recur (inc j) k true c u v)
+            (let [c (assoc c k (c j))
+                  u (assoc u k uk)
+                  v (assoc v k (if v-changed?
+                                 uk
+                                 (min uk (v j))))
+                  v-changed? (or v-changed? (< uk (v j)))]
+              (recur (inc j) (inc k) v-changed? c u v))))
+        (let [f' (if (= k b)
+                   f
+                   (conj f k))]
+          [f' c u v])))))
 
 ;; So once `changed?` becomes true, it can never go unchanged again.
 
-(defn- m5 [n m f c u v r s]
+(defn- m5 [f c u v r s]
   (let [a (peek (pop f))
         b (peek f)
         l (- (count f) 2) ;; index of second-to-last elem
@@ -917,7 +922,7 @@ represented by freqs"
               c (subvec c 0 a)
               u (subvec u 0 a)
               v (subvec v 0 a)]
-          (recur n m f c u v r s)))
+          (recur f c u v r s)))
 
       :else
       ;; Decrement `v_j` and set all remaining elements in THIS partition to
@@ -946,7 +951,7 @@ represented by freqs"
                              (assoc v k-1 0)
                              (- amount vk))
                       (assoc v k-1 (- vk amount))))))]
-        (multiset-partitions-M n m f c u v r s)))))
+        (multiset-partitions-M f c u v r s)))))
 
 (defn- m5*
   ;; Understand this one first.
@@ -987,7 +992,7 @@ represented by freqs"
                     (let [k (first ks)]
                       (recur (rest ks)
                              (assoc v k (u k))))))]
-          (multiset-partitions-M n m f c u v a b l r s))))))
+          (multiset-partitions-M f c u v a b l r s))))))
 
 ;; OKAY! So I think m5 does something and m6 goes backwards and does it for the
 ;; previous partish.
