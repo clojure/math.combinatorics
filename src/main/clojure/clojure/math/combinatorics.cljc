@@ -900,8 +900,9 @@ represented by freqs"
 ;; So once `changed?` becomes true, it can never go unchanged again.
 
 (defn- m5 [f c u v r s]
-  (let [a (peek (pop f))
-        b (peek f)
+  (let [a  (peek (pop f))
+        ;; TODO replace with `(count c)` don't keep final one!
+        b  (peek f)
         l (- (count f) 2) ;; index of second-to-last elem
         j (loop [j (dec b)]
             ;; Go backwards to the first non-zero j entry, starting with `(dec
@@ -909,41 +910,123 @@ represented by freqs"
             (if (zero? (v j))
               (recur (dec j))
               j))]
+    ;; We are in the LAST partition of the bunch; given a limit, restricting
+    ;; ourselves to the case where we are dealing with a set of a SINGLE
+    ;; element... (= j a)
+    ;;
+    ;; The first predicate says, given that we are a single-elem set, if we
+    ;; decrement, is `m2` going to make a bunch of stuff automatically that we
+    ;; are going to end up skipping? Nice optimization...
+
+    ;; The second predicate says, are we in a singleton? skip too.
+    #_
+    (when-not (= (v j) 1)
+      (prn "remaining in set:   " (u j))
+      (prn "budget:             " (- r l))
+      (prn "if we dec m2 makes: " (> (quot (u j) (dec (v j)))
+                                     (- r l)))
+      ;; which equals...
+      (prn "skip?               " (< (* (dec (v j)) (- r l))
+                                     (u j))))
+    ;; TODO SO what is the equivalent thing to do for minimums??
+    ;;
+    ;; Well, if you don't yet have enough, you can predict what is going to
+    ;; happen and see if it leads to a place greater than the minimums.
+    ;;
+    ;; If we have a
+
+    #_(prn "received: " f c u v)
+    ;;
+    ;; So the question is: WILL THIS LINE eventually produce something longer
+    ;; than the minimums? Once we get down to a singleton at the end.
+    ;;
+    ;; NOTE I think it is slightly more subtle on the max bound. The BEST case
+    ;; is that we only produce that many more candidates, and it only grows from
+    ;; there. So that makes sense to kill.
+    ;;
+    ;; But it's not quite enough to just check divisible.
+    ;;
+    ;; NOTE I think we can do this all in one shot by anticipating BETTER what
+    ;; M2 is going to do...
+
     (cond
+
+
       (or (and r
-               (= j a)
-               (< (* (dec (v j)) (- r l))
-                  (u j)))
+               (not= (v a) 1)
+               (let [new-val (dec (v a))
+                     uj      (u a)]
+                 #_(prn new-val)
+                 (when (> (+ l (quot uj new-val)) r)
+                   (prn r l (subvec c a b) (subvec  u a b)
+                        (subvec v a b)
+                        uj new-val (+ l (quot uj new-val)))
+                   )
+                 (> (+ l (quot uj new-val)) r)))
           (and (= j a)
-               (= (v j) 1)))
+               (or
+                (= (v j) 1)
+                ;; TODO re-enable
+                #_(and r (< (* (dec (v j)) (- r l)) (u j)))
+                (and r
+                     (let [new-val (dec (v j))
+                           uj      (u j)]
+                       ;; TODO see if I can cook up a situation where this is true...
+                       #_(when (and (> (+ l (+ (quot uj new-val)
+                                               (if (zero? (rem uj new-val))
+                                                 0
+                                                 1)))
+                                       r)
+                                    (not (> (+ l (+ (quot uj new-val)
+                                                    (if (zero? (rem uj new-val))
+                                                      0
+                                                      0)))
+                                            r)))
+                           #_(prn "HI!"))
+                       (> (+ l (quot uj new-val)) r)))
+
+                #_(and s (do
+                           (prn (- s l)
+                                (u j)
+                                (min (- (u j) (dec (v j)))
+                                     (dec (v j)))
+                                (quot
+                                 (u j)
+                                 (min (- (u j) (dec (v j)))
+                                      (dec (v j))))
+                                )
+                           (< (quot
+                               (u j)
+                               (min (- (u j) (dec (v j)))
+                                    (dec (v j))))
+                              (- s l)))))))
       (if (zero? l)
         ()
-        (let [f (pop f)
-              c (subvec c 0 a)
-              u (subvec u 0 a)
-              v (subvec v 0 a)]
-          (recur f c u v r s)))
+        (recur (pop f)
+               (subvec c 0 a)
+               (subvec u 0 a)
+               (subvec v 0 a)
+               r
+               s))
 
       :else
       ;; Decrement `v_j` and set all remaining elements in THIS partition to
       ;; `u`. NOTE: Every time you adjust `v_j` in any capacity, you set the
       ;; rest of the partition to `u`.
-      (let [v (update v j dec)
-            ;; to do my fix, kill diff-uv... see patch, but here is the deal.
-            diff-uv (if s (apply + (for [i (range a (inc j))]
-                                     (- (u i) (v i)))) nil)
-            v (loop [ks (range (inc j) b)
-                     v v]
-                (if (empty? ks)
-                  v
-                  (let [k (first ks)]
-                    (recur (rest ks)
-                           (assoc v k (u k))))))
-            min-partitions-after-this (if s (- s (inc l)) 0)
-            amount-to-dec (if s (max 0 (- min-partitions-after-this diff-uv)) 0)
+      (let [v      (update v j dec)
+            prefix (subvec v 0 (inc j))
+            v       (into (subvec v 0 (inc j))
+                          (subvec u (inc j)))
+            amount-to-dec 0 #_(if s
+                                (let [diff-uv (apply + (for [i (range a (inc  j))]
+                                                         (- (u i) (v i))))
+                                      min-partitions-left (- s (inc l))]
+                                  (max 0 (- min-partitions-left diff-uv)))
+                                0)
             v (if (zero? amount-to-dec)
                 v
-                (loop [k-1 (dec b), v v
+                (loop [k-1 (dec b)
+                       v v
                        amount amount-to-dec]
                   (let [vk (v k-1)]
                     (if (> amount vk)
@@ -992,7 +1075,7 @@ represented by freqs"
                     (let [k (first ks)]
                       (recur (rest ks)
                              (assoc v k (u k))))))]
-          (multiset-partitions-M f c u v a b l r s))))))
+          (multiset-partitions-M f c u v r s))))))
 
 ;; OKAY! So I think m5 does something and m6 goes backwards and does it for the
 ;; previous partish.
