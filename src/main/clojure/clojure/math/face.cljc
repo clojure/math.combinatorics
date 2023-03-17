@@ -820,8 +820,11 @@ represented by freqs"
          stack ()]
      (multiset-partitions-M n m f c u v a b l r s)))
   ([n m f c u v a b l r s]
+   ;; OKAY so this is hte issue here, that we get a zero coming in!
+   (assert (not (zero? (v a))))
    (let [[u v c j k] (loop [j a, k b, x false     ; M2
                             u u, v v, c c]
+
                        (if (>= j b)
                          [u v c j k]
                          (let [u (assoc u k (- (u j) (v j)))]
