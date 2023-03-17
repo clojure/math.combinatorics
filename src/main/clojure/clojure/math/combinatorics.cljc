@@ -896,7 +896,9 @@ represented by freqs"
                                    (assoc v k-1 0)
                                    (- amount vk))
                             (assoc v k-1 (- vk amount))))))]
-              (multiset-partitions-M n m f c u v a b l r s)))))
+              (if (zero? (v a))
+                (m6 n m f c u v a b l r s)
+                (multiset-partitions-M n m f c u v a b l r s))))))
 
 (defn- m6  ; M6
   [n m f c u v a b l r s]
