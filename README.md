@@ -175,6 +175,9 @@ Developer Information
 
 Changelog
 ========================================
+* Release 0.2.0 on 2023-03-18
+  * MCOMB-11 - Fix incorrect results, overflow in partitions-M
+
 * Release 0.1.6 on 2019-07-24
   * Improved laziness characteristics of many functions
   * Added `permuted-combinations`
