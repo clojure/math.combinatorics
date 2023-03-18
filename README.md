@@ -9,7 +9,7 @@ sequences for common combinatorial functions.
 Releases and Dependency Information
 ========================================
 
-Latest stable release: 0.1.6
+Latest stable release: 0.2.0
 
 * [All Released Versions](http://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22org.clojure%22%20AND%20a%3A%22math.combinatorics%22)
 
@@ -17,13 +17,13 @@ Latest stable release: 0.1.6
 
 [CLI/`deps.edn`](https://clojure.org/reference/deps_and_cli) dependency information:
 ```clojure
-org.clojure/math.combinatorics {:mvn/version "0.1.6"}
+org.clojure/math.combinatorics {:mvn/version "0.2.0"}
 ```
 
 [Leiningen](https://github.com/technomancy/leiningen) dependency information:
 
 ```clojure
-[org.clojure/math.combinatorics "0.1.6"]
+[org.clojure/math.combinatorics "0.2.0"]
 ```
 
 [Maven](http://maven.apache.org/) dependency information:
@@ -32,7 +32,7 @@ org.clojure/math.combinatorics {:mvn/version "0.1.6"}
 <dependency>
   <groupId>org.clojure</groupId>
   <artifactId>math.combinatorics</artifactId>
-  <version>0.1.6</version>
+  <version>0.2.0</version>
 </dependency>
 ```
 
