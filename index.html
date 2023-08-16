@@ -1,7 +1,7 @@
 <html>
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>clojure.math.combinatorics - Lazy sequences for common combinatorial functions 0.1.5 API documentation</title>
+    <title>clojure.math.combinatorics - math.combinatorics 0.2.1-SNAPSHOT API documentation</title>
     <link rel="icon" href="static/favicon.png" />
     <link rel="shortcut icon" href="static/favicon.png" />
     <link rel="stylesheet" href="static/clojure.css" type="text/css" media="all" />
@@ -25,14 +25,14 @@ namespace.
       <div id="leftcolumn"><div style="text-align: center;"></div>
 <div class="menu">
   <div class="WikiCustomNav WikiElement wiki">
-    <span class="toc-header"><span id="project-name">Lazy sequences for common combinatorial functions</span> <span id="version">0.1.5</span> API</span><br />
+    <span class="toc-header"><span id="project-name">math.combinatorics</span> <span id="version">0.2.1-SNAPSHOT</span> API</span><br />
     <ul>
       <li><a href="index.html" class="wiki_link">Overview</a></li>
       <li><a href="api-index.html" class="wiki_link">API Index</a></li>
     </ul>
     
     
-    <a class="wiki_link" href="http://clojure.org">Clojure Home</a>
+    <a class="wiki_link" href="https://clojure.org">Clojure Home</a>
   </div>
 </div>
 </div>
@@ -87,6 +87,9 @@ namespace.
       <a href="#clojure.math.combinatorics/permutations" class="toc-entry-anchor">permutations</a>
       
     </div><div class="toc-entry" style="margin-left: 1em;">
+      <a href="#clojure.math.combinatorics/permuted-combinations" class="toc-entry-anchor">permuted-combinations</a>
+      
+    </div><div class="toc-entry" style="margin-left: 1em;">
       <a href="#clojure.math.combinatorics/selections" class="toc-entry-anchor">selections</a>
       
     </div><div class="toc-entry" style="margin-left: 1em;">
@@ -100,13 +103,13 @@ namespace.
 </div>
 </div>
                 <div id="content-tag"><h1 id="overview">API for <span id="clojure.math.combinatorics">clojure.math.combinatorics</span>
-  - <span id="header-project">Lazy sequences for common combinatorial functions</span> <span id="header-version">0.1.5</span><span id="header-status-block"> (<span id="header-status">in development</span>)</span>
+  - <span id="header-project">math.combinatorics</span> <span id="header-version">0.2.1-SNAPSHOT</span><span id="header-status-block"> (<span id="header-status">in development</span>)</span>
   </h1>
 <span id="author-line">by <span id="author-name">Mark Engelberg</span><br /></span>
 <br />Full namespace name: <span id="long-name">clojure.math.combinatorics</span>
 <p></p>
 <h2>Overview</h2>
-<div id="home-page">Project home page is <a href="http://github.com/clojure/math.combinatorics/">http://github.com/clojure/math.combinatorics/</a></div>
+<div id="home-page">Project home page is <a href="https://github.com/clojure/math.combinatorics/">https://github.com/clojure/math.combinatorics/</a></div>
 <pre id="namespace-docstr">Efficient, functional algorithms for generating lazy
 sequences for common combinatorial functions. (See the source code 
 for a longer description.)</pre>
@@ -130,7 +133,7 @@ for a longer description.)</pre>
     <pre id="var-specs"></pre>
     
     
-    <a id="var-source" href="https://github.com/clojure/math.combinatorics/blob/4c3d26eec2206e09b8b8c305bfed921966bce6f6/src/main/clojure/clojure/math/combinatorics.cljc#L208">Source</a>
+    <a id="var-source" href="https://github.com/clojure/math.combinatorics/blob/561208967b3bcf59bcac0a1c999b24f5d5dbe81c/src/main/clojure/clojure/math/combinatorics.cljc#L232">Source</a>
   </div><div id="var-entry">
     <br />
     <hr />
@@ -142,7 +145,7 @@ for a longer description.)</pre>
     <pre id="var-specs"></pre>
     
     
-    <a id="var-source" href="https://github.com/clojure/math.combinatorics/blob/4c3d26eec2206e09b8b8c305bfed921966bce6f6/src/main/clojure/clojure/math/combinatorics.cljc#L177">Source</a>
+    <a id="var-source" href="https://github.com/clojure/math.combinatorics/blob/561208967b3bcf59bcac0a1c999b24f5d5dbe81c/src/main/clojure/clojure/math/combinatorics.cljc#L201">Source</a>
   </div><div id="var-entry">
     <br />
     <hr />
@@ -154,7 +157,7 @@ for a longer description.)</pre>
     <pre id="var-specs"></pre>
     
     
-    <a id="var-source" href="https://github.com/clojure/math.combinatorics/blob/4c3d26eec2206e09b8b8c305bfed921966bce6f6/src/main/clojure/clojure/math/combinatorics.cljc#L496">Source</a>
+    <a id="var-source" href="https://github.com/clojure/math.combinatorics/blob/561208967b3bcf59bcac0a1c999b24f5d5dbe81c/src/main/clojure/clojure/math/combinatorics.cljc#L526">Source</a>
   </div><div id="var-entry">
     <br />
     <hr />
@@ -166,7 +169,7 @@ for a longer description.)</pre>
     <pre id="var-specs"></pre>
     
     
-    <a id="var-source" href="https://github.com/clojure/math.combinatorics/blob/4c3d26eec2206e09b8b8c305bfed921966bce6f6/src/main/clojure/clojure/math/combinatorics.cljc#L345">Source</a>
+    <a id="var-source" href="https://github.com/clojure/math.combinatorics/blob/561208967b3bcf59bcac0a1c999b24f5d5dbe81c/src/main/clojure/clojure/math/combinatorics.cljc#L375">Source</a>
   </div><div id="var-entry">
     <br />
     <hr />
@@ -178,7 +181,7 @@ for a longer description.)</pre>
     <pre id="var-specs"></pre>
     
     
-    <a id="var-source" href="https://github.com/clojure/math.combinatorics/blob/4c3d26eec2206e09b8b8c305bfed921966bce6f6/src/main/clojure/clojure/math/combinatorics.cljc#L518">Source</a>
+    <a id="var-source" href="https://github.com/clojure/math.combinatorics/blob/561208967b3bcf59bcac0a1c999b24f5d5dbe81c/src/main/clojure/clojure/math/combinatorics.cljc#L548">Source</a>
   </div><div id="var-entry">
     <br />
     <hr />
@@ -190,7 +193,7 @@ for a longer description.)</pre>
     <pre id="var-specs"></pre>
     
     
-    <a id="var-source" href="https://github.com/clojure/math.combinatorics/blob/4c3d26eec2206e09b8b8c305bfed921966bce6f6/src/main/clojure/clojure/math/combinatorics.cljc#L437">Source</a>
+    <a id="var-source" href="https://github.com/clojure/math.combinatorics/blob/561208967b3bcf59bcac0a1c999b24f5d5dbe81c/src/main/clojure/clojure/math/combinatorics.cljc#L467">Source</a>
   </div><div id="var-entry">
     <br />
     <hr />
@@ -202,7 +205,7 @@ for a longer description.)</pre>
     <pre id="var-specs"></pre>
     
     
-    <a id="var-source" href="https://github.com/clojure/math.combinatorics/blob/4c3d26eec2206e09b8b8c305bfed921966bce6f6/src/main/clojure/clojure/math/combinatorics.cljc#L556">Source</a>
+    <a id="var-source" href="https://github.com/clojure/math.combinatorics/blob/561208967b3bcf59bcac0a1c999b24f5d5dbe81c/src/main/clojure/clojure/math/combinatorics.cljc#L586">Source</a>
   </div><div id="var-entry">
     <br />
     <hr />
@@ -214,7 +217,7 @@ for a longer description.)</pre>
     <pre id="var-specs"></pre>
     
     
-    <a id="var-source" href="https://github.com/clojure/math.combinatorics/blob/4c3d26eec2206e09b8b8c305bfed921966bce6f6/src/main/clojure/clojure/math/combinatorics.cljc#L419">Source</a>
+    <a id="var-source" href="https://github.com/clojure/math.combinatorics/blob/561208967b3bcf59bcac0a1c999b24f5d5dbe81c/src/main/clojure/clojure/math/combinatorics.cljc#L449">Source</a>
   </div><div id="var-entry">
     <br />
     <hr />
@@ -227,7 +230,7 @@ Optionally pass in :min and/or :max to specify inclusive bounds on the number of
     <pre id="var-specs"></pre>
     
     
-    <a id="var-source" href="https://github.com/clojure/math.combinatorics/blob/4c3d26eec2206e09b8b8c305bfed921966bce6f6/src/main/clojure/clojure/math/combinatorics.cljc#L906">Source</a>
+    <a id="var-source" href="https://github.com/clojure/math.combinatorics/blob/561208967b3bcf59bcac0a1c999b24f5d5dbe81c/src/main/clojure/clojure/math/combinatorics.cljc#L939">Source</a>
   </div><div id="var-entry">
     <br />
     <hr />
@@ -240,7 +243,7 @@ Optionally pass in :min and/or :max to specify inclusive bounds on the number of
     <pre id="var-specs"></pre>
     
     
-    <a id="var-source" href="https://github.com/clojure/math.combinatorics/blob/4c3d26eec2206e09b8b8c305bfed921966bce6f6/src/main/clojure/clojure/math/combinatorics.cljc#L614">Source</a>
+    <a id="var-source" href="https://github.com/clojure/math.combinatorics/blob/561208967b3bcf59bcac0a1c999b24f5d5dbe81c/src/main/clojure/clojure/math/combinatorics.cljc#L644">Source</a>
   </div><div id="var-entry">
     <br />
     <hr />
@@ -253,7 +256,19 @@ Optionally pass in :min and/or :max to specify inclusive bounds on the number of
     <pre id="var-specs"></pre>
     
     
-    <a id="var-source" href="https://github.com/clojure/math.combinatorics/blob/4c3d26eec2206e09b8b8c305bfed921966bce6f6/src/main/clojure/clojure/math/combinatorics.cljc#L280">Source</a>
+    <a id="var-source" href="https://github.com/clojure/math.combinatorics/blob/561208967b3bcf59bcac0a1c999b24f5d5dbe81c/src/main/clojure/clojure/math/combinatorics.cljc#L303">Source</a>
+  </div><div id="var-entry">
+    <br />
+    <hr />
+    <h2 id="clojure.math.combinatorics/permuted-combinations">permuted-combinations</h2>
+    <span id="var-type">function</span><br />
+    <pre id="var-usage">Usage: (permuted-combinations items t)
+</pre>
+    <pre id="var-docstr">Every permutation of every combination of t elements from items</pre>
+    <pre id="var-specs"></pre>
+    
+    
+    <a id="var-source" href="https://github.com/clojure/math.combinatorics/blob/561208967b3bcf59bcac0a1c999b24f5d5dbe81c/src/main/clojure/clojure/math/combinatorics.cljc#L317">Source</a>
   </div><div id="var-entry">
     <br />
     <hr />
@@ -265,7 +280,7 @@ Optionally pass in :min and/or :max to specify inclusive bounds on the number of
     <pre id="var-specs"></pre>
     
     
-    <a id="var-source" href="https://github.com/clojure/math.combinatorics/blob/4c3d26eec2206e09b8b8c305bfed921966bce6f6/src/main/clojure/clojure/math/combinatorics.cljc#L228">Source</a>
+    <a id="var-source" href="https://github.com/clojure/math.combinatorics/blob/561208967b3bcf59bcac0a1c999b24f5d5dbe81c/src/main/clojure/clojure/math/combinatorics.cljc#L252">Source</a>
   </div><div id="var-entry">
     <br />
     <hr />
@@ -277,7 +292,7 @@ Optionally pass in :min and/or :max to specify inclusive bounds on the number of
     <pre id="var-specs"></pre>
     
     
-    <a id="var-source" href="https://github.com/clojure/math.combinatorics/blob/4c3d26eec2206e09b8b8c305bfed921966bce6f6/src/main/clojure/clojure/math/combinatorics.cljc#L202">Source</a>
+    <a id="var-source" href="https://github.com/clojure/math.combinatorics/blob/561208967b3bcf59bcac0a1c999b24f5d5dbe81c/src/main/clojure/clojure/math/combinatorics.cljc#L226">Source</a>
   </div>
 </div>
 
@@ -288,7 +303,7 @@ Optionally pass in :min and/or :max to specify inclusive bounds on the number of
           </div>
 	</div>
 	<div id="foot">
-	  <div id="copyright" style="text-align: center;">Copyright 2007-2017 by Rich Hickey and the various contributors</div>
+	  <div id="copyright" style="text-align: center;">Copyright 2007-2023 by Rich Hickey and the various contributors</div>
 	</div>
       </div>
       <div id="DesignedBy">Logo &amp; site design by <a href="http://www.tomhickey.com" title="Visit Tom Hickey's website.">Tom Hickey</a>.<br />
