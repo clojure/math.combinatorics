@@ -9,30 +9,29 @@ sequences for common combinatorial functions.
 Releases and Dependency Information
 ========================================
 
-Latest stable release: 0.2.0
+Latest stable release: 0.3.0
 
-* [All Released Versions](http://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22org.clojure%22%20AND%20a%3A%22math.combinatorics%22)
-
+* [All Released Versions](https://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22org.clojure%22%20AND%20a%3A%22math.combinatorics%22)
 * [Development Snapshot Versions](https://oss.sonatype.org/index.html#nexus-search;gav~org.clojure~math.combinatorics~~~)
 
 [CLI/`deps.edn`](https://clojure.org/reference/deps_and_cli) dependency information:
 ```clojure
-org.clojure/math.combinatorics {:mvn/version "0.2.0"}
+org.clojure/math.combinatorics {:mvn/version "0.3.0"}
 ```
 
 [Leiningen](https://github.com/technomancy/leiningen) dependency information:
 
 ```clojure
-[org.clojure/math.combinatorics "0.2.0"]
+[org.clojure/math.combinatorics "0.3.0"]
 ```
 
-[Maven](http://maven.apache.org/) dependency information:
+[Maven](https://maven.apache.org/) dependency information:
 
 ```xml
 <dependency>
   <groupId>org.clojure</groupId>
   <artifactId>math.combinatorics</artifactId>
-  <version>0.2.0</version>
+  <version>0.3.0</version>
 </dependency>
 ```
 
@@ -174,6 +173,9 @@ Developer Information
 
 Changelog
 ========================================
+* Release 0.3.0 on 2024-02-19
+  * Update parent pom
+
 * Release 0.2.0 on 2023-03-18
   * MCOMB-11 - Fix incorrect results, overflow in partitions-M
 
