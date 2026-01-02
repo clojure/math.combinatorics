@@ -9,20 +9,20 @@ sequences for common combinatorial functions.
 Releases and Dependency Information
 ========================================
 
-Latest stable release: 0.3.1
+Latest stable release: 0.3.2
 
 * [All Released Versions](https://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22org.clojure%22%20AND%20a%3A%22math.combinatorics%22)
 * [Development Snapshot Versions](https://oss.sonatype.org/index.html#nexus-search;gav~org.clojure~math.combinatorics~~~)
 
 [CLI/`deps.edn`](https://clojure.org/reference/deps_and_cli) dependency information:
 ```clojure
-org.clojure/math.combinatorics {:mvn/version "0.3.1"}
+org.clojure/math.combinatorics {:mvn/version "0.3.2"}
 ```
 
 [Leiningen](https://github.com/technomancy/leiningen) dependency information:
 
 ```clojure
-[org.clojure/math.combinatorics "0.3.1"]
+[org.clojure/math.combinatorics "0.3.2"]
 ```
 
 [Maven](https://maven.apache.org/) dependency information:
@@ -31,11 +31,9 @@ org.clojure/math.combinatorics {:mvn/version "0.3.1"}
 <dependency>
   <groupId>org.clojure</groupId>
   <artifactId>math.combinatorics</artifactId>
-  <version>0.3.1</version>
+  <version>0.3.2</version>
 </dependency>
 ```
-
-*Note: If you are using Clojure 1.2 - 1.6, you will need math.combinatorics version 0.1.3.*
 
 Example Usage
 ========================================
@@ -173,7 +171,7 @@ Developer Information
 
 Changelog
 ========================================
-* Release 0.3.1 on 2026-01-02
+* Release 0.3.2 on 2026-01-02
   * Update parent pom
 
 * Release 0.3.0 on 2024-02-19
